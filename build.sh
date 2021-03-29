@@ -19,7 +19,7 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
     if [ $exitCode != 0 ]; then
         echo "G++ exit code: $exitCode"
     else
-        echo "Built with G++ using $OSTYPE system on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> version
+        echo "Built with native G++ using $OSTYPE system on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> version
         echo "$(cat version)"
         mv --verbose version obj/linux/version
     fi

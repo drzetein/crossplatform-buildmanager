@@ -21,25 +21,20 @@
 
 #ifdef _LINUX_BUILD
     #include <unistd.h>
-    // Work around undefined behaviours
+    // Work around undefined behaviour
     #define GetModuleFileName 0;
-    #define GetLastError() 0;
 #endif
 
 #ifdef _WINDOWS_BUILD
-    #include <errhandlingapi.h>
     #include <libloaderapi.h>
-    // Work around undefined behaviours
+    // Work around undefined behaviour
     #define readlink 0;
 #endif
 
 using namespace std;
 
-#pragma GCC diagnostic pop
-#pragma GCC diagnostic ignored "-Wunused-parameter"
 int main(int argc, char **argv)
 {
-    #pragma GCC diagnostic push
 
     if (argc>1) {
         // Get program arguments
@@ -54,17 +49,15 @@ int main(int argc, char **argv)
         // Get executable path (Linux)
         _bufsize = readlink("/proc/self/exe", _256charbuf, _bufsize);
         if (!_bufsize) {
-            cout << "Error getting path to the executable" << endl;
-        } else {
     #endif
 
     #ifdef _WINDOWS_BUILD
         // Get executable path (Windows)
-        bool _getModule = GetModuleFileName(NULL, _256charbuf, _bufsize);
-        if (!_getModule) {
-            cout << GetLastError();
-        } else { 
+        _bufsize = GetModuleFileName(NULL, _256charbuf, _bufsize);
+        if (!_bufsize) {
     #endif
+        cout << "Error getting path to the executable" << endl;
+    } else { 
         // Remove filename from path to get the executable's directory
         executableDirectory = _256charbuf;
         string::reverse_iterator i;

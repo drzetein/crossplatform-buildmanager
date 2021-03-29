@@ -1,4 +1,4 @@
-A simple VScode template for cross compiling projects using G++
+A simple template for cross compiling projects using G++
 
 Windows must contain msys2 to run Bash and MinGW:
 https://www.msys2.org/
