@@ -1,0 +1,69 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        { // LINUX BUILD
+            "type": "process",
+            "label": "Linux build",
+            "command": "bash",
+            "args": [
+                "-c",
+                "./build.sh --linux"
+            ],
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        { // WINDOWS BUILD 
+            "type": "process",
+            "label": "Windows build",
+            "command": "C:/msys64/usr/bin/bash.exe",
+            "args": [
+                "--login",
+                "-c",
+                "./build.sh --windows"
+            ],
+            "options": { 
+                        "CWD": "C:/msys64/mingw64/bin",
+                        "CHERE_INVOKING": "1",
+                        "MSYSTEM": "MINGW64"  
+                            
+            },
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        { // WINDOWS BUILD FROM LINUX
+            "type": "process",
+            "label": "Windows build from Linux",
+            "command": "bash",
+            "args": [
+                "-c",
+                "./build.sh --windows-from-linux"
+            ],
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
