@@ -17,7 +17,7 @@
                 "/usr/x86_64-w64-mingw32/include/**"
             ],
             "browse":
-            {
+            {   
                 "path":
                 [
                     "${workspaceFolder}",
@@ -39,7 +39,7 @@
                 "C:/msys64/usr/include/**"
             ],
             "browse":
-            {
+            {   
                 "path":
                 [
                     "${workspaceFolder}",

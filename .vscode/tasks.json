@@ -2,12 +2,12 @@
     "version": "2.0.0",
     "tasks": [
         { // LINUX BUILD
-            "type": "process",
+            "type": "shell",
             "label": "Linux build",
             "command": "bash",
             "args": [
                 "-c",
-                "./build.sh --linux"
+                "./build.sh --linux obj/linux/main"
             ],
             "problemMatcher": [
                 "$tsc"
@@ -21,38 +21,27 @@
             }
         },
         { // WINDOWS BUILD 
-            "type": "process",
+            "type": "shell",
             "label": "Windows build",
-            "command": "C:/msys64/usr/bin/bash.exe",
-            "args": [
-                "--login",
-                "-c",
-                "./build.sh --windows"
-            ],
-            "options": { 
-                        "CWD": "C:/msys64/mingw64/bin",
-                        "CHERE_INVOKING": "1",
-                        "MSYSTEM": "MINGW64"  
-                            
-            },
-            "problemMatcher": [
-                "$tsc"
-            ],
-            "presentation": {
-                "reveal": "always"
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            }
-        },
-        { // WINDOWS BUILD FROM LINUX
-            "type": "process",
-            "label": "Windows build from Linux",
             "command": "bash",
+            "windows": {
+                "options" : {
+                    "CWD": "C:/msys64/mingw64/bin",
+                    "MSYSTEM": "MINGW64",
+                    "CHERE_INVOKING": "1"
+                },
+                "args": [
+                    "--login",
+                ]
+            },
+            "linux": {
+                "options" : {
+                    "CWD": "/usr/x86_64-w64-mingw32/bin"
+                }
+            },
             "args": [
                 "-c",
-                "./build.sh --windows-from-linux"
+                "./build.sh --windows obj/windows/main.exe"
             ],
             "problemMatcher": [
                 "$tsc"

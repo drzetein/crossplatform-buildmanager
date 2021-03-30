@@ -7,57 +7,20 @@
         {
             "preLaunchTask": "Linux build",
             "name": "Launch Linux build",
-            "type": "cppdbg",
-            "cwd": "${workspaceFolder}",
+            "type": "gdb",
             "request": "launch",
             "program": "${workspaceFolder}/obj/linux/main",
-            "args": [ "--source-directory" ],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
+            "linux":   { "miDebuggerPath": "/usr/bin/gdb" },
+            "windows": { "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe" },
         },
         {
             "preLaunchTask": "Windows build",
             "name": "Launch Windows build",
-            "type": "cppdbg",
-            "cwd": "${workspaceFolder}",
+            "type": "gdb",
             "request": "launch",
             "program": "${workspaceFolder}/obj/windows/main.exe",
-            "args": [ "--source-directory" ],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-        },
-        {
-            "preLaunchTask": "Windows build from Linux",
-            "name": "Launch Windows built from Linux",
-            "type": "cppdbg",
-            "cwd": "${workspaceFolder}",
-            "request": "launch",
-            "program": "${workspaceFolder}/obj/windows-from-linux/main.exe",
-            "args": [ "--source-directory" ],
-            "externalConsole": true,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-        },
+            "linux":   { "miDebuggerPath": "/usr/bin/gdb" },
+            "windows": { "miDebuggerPath": "C:/msys64/mingw64/bin/gdb.exe" },
+        }   // If using CPPDBG, uncomment configuration lines
     ]
 }
