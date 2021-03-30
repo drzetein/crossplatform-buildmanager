@@ -19,7 +19,7 @@ A simple crossplatform build environment, with a program that outputs its own bu
 
 **Last parameter (required): path to the generated object/executable, including filename**
 ###### Example:
-> ./build.sh --linux   obj/linux/main
+> ./build.sh --linux   obj/linux/main  
 > ./build.sh --windows obj/windows/main.exe
 
 A \*.version file named after the generated object will be created in the target directory, containing build details  
