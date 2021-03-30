@@ -4,7 +4,7 @@
 
 #define ExecutableDirectory main
 // Get target system from compiler argument -D <OS>_BUILD
-// These macros with "_surrounding_underscores_" are only meant to be defined by the compiler
+// These macros with _surrounding_underscores_ are only meant to be defined in the compiler
 // checking for them in code may lead to undefined behaviour
 
 // Therefore, use only LINUX_BUILD or WINDOWS_BUILD to define OS specific instructions
@@ -38,6 +38,7 @@ int ExecutableDirectory(int argc, char **argv=(char**)"")
     if (argc > 1) {
         // Get program arguments
         string argvx = argv[1];
+        cout << argvx;
         argvx.clear();
     }
 
