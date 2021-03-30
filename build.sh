@@ -1,22 +1,20 @@
 #!/bin/bash
+echo "Working directory $(pwd)"
 parameters=$@
 clength=$#
-
-a_or_an_os=if( ${$OSTYPE:0:1} =)
-
 if [[ $clength<2 ]]; then echo "Error: Expected at least 2 arguments"; exit $clength; fi
 
 function getLastArgument {
-    if   [[ $#<2 ]]; then echo "getLastArgument::Error: Expected 2 arguments"; exit $#;
-    elif [[ $#>2 ]]; then echo "getLastArgument::Error: Expected 2 arguments"; exit $#;
+    if   [[ $#!=2 ]]; then echo "getLastArgument::Error: Expected 2 arguments"; exit $#
     elif [[ $#=2 ]]; then cmdString=$1; j=$2;
     fi
     i=0
     for i in $j; do echo "${cmdString//* /}"; done
 }
 ExecutablePath=$(getLastArgument "$parameters" $clength)
+echo $ExecutablePath
+ 
 
-echo "Working directory $(pwd)"
 if [[ ! -d obj ]]; then mkdir --verbose obj; fi
 # LINUX BUILDS #
 if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
@@ -48,6 +46,7 @@ fi
 # WINDOWS BUILDS #
 if [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
     echo "Building for Windows from $OSTYPE with MinGW64/G++"
+
     if [[ $OSTYPE == "msys" ]]; then
         if [ ! -d obj/windows ]; then mkdir --verbose obj/windows; fi
         if [[ $2 == "--clean" ]] || [[ $2 == "-c" ]]; then
