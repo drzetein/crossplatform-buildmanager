@@ -22,6 +22,5 @@ A simple crossplatform build environment, with a program that outputs its own bu
 > ./build.sh --linux   obj/linux/main
 > ./build.sh --windows obj/windows/main.exe
 
-A \*.version file named after the generated object will be created in the target directory, containing build details
-
+A \*.version file named after the generated object will be created in the target directory, containing build details  
 (e.g.: *main.version* or *main.exe.version*).
