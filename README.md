@@ -1,5 +1,5 @@
-## Crossplatform Build Manager
-A simple crossplatform build environment, with a program that outputs its own build information.
+## Cross-Platform Build Manager
+A simple cross-platform build environment, with a program that outputs its own build information.
 
 ###### Windows must contain MSys2 and MinGW:
 ###### https://www.msys2.org/
