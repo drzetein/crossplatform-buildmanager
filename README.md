@@ -1,4 +1,4 @@
-### Crossplatform build manager
+### Crossplatform Build Manager
 A simple crossplatform build environment with a program that outputs its own build information.
 
 ###### Windows must contain MSys2 and MinGW:
@@ -13,8 +13,6 @@ A simple crossplatform build environment with a program that outputs its own bui
   -l
 - --windows  
   -w
-  
-*(TODO: --linux-from-windows)*
 
 #####  2nd parameter:  Delete all previous files in build directory
 - --clean
