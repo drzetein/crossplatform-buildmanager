@@ -3,7 +3,8 @@
 #include <fstream>
 
 #define ExecutableDirectory main
-// Get target system from compiler argument -D <OS>_BUILD
+
+// Get target system from compiler argument -D _<OS>_BUILD_
 // These macros with _surrounding_underscores_ are only meant to be defined in the compiler
 // checking for them in code may lead to undefined behaviour
 
@@ -33,14 +34,12 @@
 
 using namespace std;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 int ExecutableDirectory(int argc, char **argv=(char**)"")
 {
-    if (argc > 1) {
-        // Get program arguments
-        string argvx = argv[1];
-        cout << argvx;
-        argvx.clear();
-    }
+    #pragma GCC diagnostic pop
+    string argv0 = argv[0];
 
     size_t _bufsize = 256;
     char _256charbuf[_bufsize];
@@ -64,16 +63,15 @@ int ExecutableDirectory(int argc, char **argv=(char**)"")
         for (i=executableDirectory.rbegin(); *i.base() != '\\' && *i.base().base()!= '/'; i++, filenameSize++);
         filenameSize--;
         executableDirectory.erase(executableDirectory.length()-filenameSize);
-        cout << executableDirectory;
-        // Use directory string to open local files
-        ifstream version(executableDirectory + "main.version", ios::in);
+        // Use the directory string to open local files
+        ifstream version(executableDirectory + argv0 + ".version", ios::in);
         if (version.is_open()) { 
             version.getline(_256charbuf, 256, '\0');
             cout << _256charbuf;
             version.close();
         }
         else
-        {   version.open(executableDirectory + "main.exe.version", ios::in);
+        {   version.open(executableDirectory + argv0 + ".exe.version", ios::in);
             if (version.is_open()) { 
                 version.getline(_256charbuf, 256, '\0');
                 cout << _256charbuf;
