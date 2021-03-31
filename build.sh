@@ -18,12 +18,12 @@ if [[ ! -d obj ]]; then mkdir --verbose obj; fi
 # LINUX BUILDS #
 if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
     if [[ $OSTYPE == "linux-gnu" ]]; then
-        if [ ! -d obj/linux ]; then
-            mkdir --verbose obj/linux;
+        if [ ! -d $ObjectDirectory ]; then
+            mkdir --verbose $ObjectDirectory;
         fi
         if [[ $2 == "--clean" ]] || [[ $2 == "-c" ]]; then
-            if [[ -f obj/linux/* ]]; then
-                rm --verbose -R obj/linux/*;
+            if [[ -f $ObjectDirectory/* ]]; then
+                rm --verbose -R $ObjectDirectory/*;
             fi
         fi
         echo "Building for Linux with G++"
@@ -44,12 +44,12 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
         fi
         exit 0
     elif [[ $OSTYPE == "msys" ]]; then
-        if [ ! -d obj/linux ]; then
-            mkdir --verbose obj/linux;
+        if [ ! -d $ObjectDirectory ]; then
+            mkdir --verbose $ObjectDirectory;
         fi
         if [[ $2 == "--clean" ]] || [[ $2 == "-c" ]]; then
-            if [[ -f obj/linux/* ]]; then
-                rm --verbose -R obj/linux/*;
+            if [[ -f $ObjectDirectory/* ]]; then
+                rm --verbose -R $ObjectDirectory/*;
             fi
         fi
         echo "Building for Linux with G++"
@@ -76,11 +76,11 @@ elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
     echo "Building for Windows from $OSTYPE with MinGW64/G++"
 
     if [[ $OSTYPE == "msys" ]]; then
-        if [ ! -d obj/windows ]; then
-            mkdir --verbose obj/windows
+        if [ ! -d $ObjectDirectory ]; then
+            mkdir --verbose $ObjectDirectory
         fi
         if [[ $2 == "--clean" ]] || [[ $2 == "-c" ]]; then
-            if [[ -f obj/windows/* ]]; then rm --verbose -R obj/windows/*; fi
+            if [[ -f $ObjectDirectory/* ]]; then rm --verbose -R $ObjectDirectory/*; fi
         fi
     #=========================================================G++ COMMAND=========================================================#
         $(  C:/msys64/mingw64/bin/g++.exe -g -Wall -Wextra -march=native -std=c++1z -static -static-libgcc -static-libstdc++  \
@@ -99,9 +99,9 @@ elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
         fi
         exit 0
     elif [[ $OSTYPE == "linux-gnu" ]]; then
-        if [ ! -d obj/windows ]; then mkdir --verbose obj/windows; fi
+        if [ ! -d $ObjectDirectory ]; then mkdir --verbose $ObjectDirectory; fi
         if [[ $2 == "--clean" ]] || [[ $2 == "-c" ]]; then
-            if [[ -f obj/windows/* ]]; then rm --verbose -R obj/windows/*; fi
+            if [[ -f $ObjectDirectory/* ]]; then rm --verbose -R $ObjectDirectory/*; fi
         fi
     #=============================================================G++ COMMAND=====================================================#
         $(  x86_64-w64-mingw32-g++ -g -Wall -Wextra -march=native -std=c++1z -static -static-libgcc -static-libstdc++         \
