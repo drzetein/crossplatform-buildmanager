@@ -5,6 +5,16 @@
             "type": "shell",
             "label": "Linux build",
             "command": "bash",
+            "windows": {
+                "options" : {
+                    "CWD": "C:/msys64/mingw64/bin",
+                    "MSYSTEM": "MINGW64",
+                    "CHERE_INVOKING": "1"
+                },
+                "args": [
+                    "--login",
+                ]
+            },
             "args": [
                 "-c",
                 "./build.sh --linux obj/linux/main"

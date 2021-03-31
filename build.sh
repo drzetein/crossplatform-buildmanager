@@ -70,10 +70,9 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
         fi
         exit
     fi
-fi
 
 # WINDOWS BUILDS #
-if [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
+elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
     echo "Building for Windows from $OSTYPE with MinGW64/G++"
 
     if [[ $OSTYPE == "msys" ]]; then
@@ -121,4 +120,6 @@ if [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
         fi
         exit
     fi
+else
+    echo "Error: Unknown target operational system ${1#--}. Please specify either --linux or --windows as the first argument."
 fi
