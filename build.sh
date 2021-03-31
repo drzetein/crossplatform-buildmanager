@@ -42,7 +42,7 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
             echo "$ObjectFilename: built with native G++ from $OSTYPE on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $ObjectPath.version
             echo "$(cat $ObjectPath.version)"
         fi
-        exit
+        exit 0
     elif [[ $OSTYPE == "msys" ]]; then
         if [ ! -d obj/linux ]; then
             mkdir --verbose obj/linux;
@@ -68,7 +68,7 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
             echo "$ObjectFilename: built with MinGW/G++ from $OSTYPE on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $ObjectPath.version
             echo "$(cat $ObjectPath.version)"
         fi
-        exit
+        exit 0
     fi
 
 # WINDOWS BUILDS #
@@ -97,7 +97,7 @@ elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
             echo "$ObjectFilename: built with MinGW/G++ from $OSTYPE on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $ObjectPath.version
             echo "$(cat $ObjectPath.version)"
         fi
-        exit
+        exit 0
     elif [[ $OSTYPE == "linux-gnu" ]]; then
         if [ ! -d obj/windows ]; then mkdir --verbose obj/windows; fi
         if [[ $2 == "--clean" ]] || [[ $2 == "-c" ]]; then
@@ -118,8 +118,9 @@ elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
             echo "$ObjectFilename: built with MinGW/G++ from $OSTYPE on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $ObjectPath.version
             echo "$(cat $ObjectPath.version)"
         fi
-        exit
+        exit 0
     fi
 else
     echo "Error: Unknown target operational system ${1#--}. Please specify either --linux or --windows as the first argument."
+    exit 1
 fi

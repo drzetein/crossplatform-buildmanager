@@ -2,11 +2,11 @@
     "version": "2.0.0",
     "tasks": [
         { // LINUX BUILD
-            "type": "shell",
+            "type": "process",
             "label": "Linux build",
             "command": "bash",
             "windows": {
-                "options" : {
+                "options": {
                     "CWD": "C:/msys64/mingw64/bin",
                     "MSYSTEM": "MINGW64",
                     "CHERE_INVOKING": "1"
@@ -23,7 +23,7 @@
                 "$tsc"
             ],
             "presentation": {
-                "reveal": "never"
+                "reveal": "always"
             },
             "group": {
                 "kind": "build",
@@ -31,7 +31,7 @@
             }
         },
         { // WINDOWS BUILD 
-            "type": "shell",
+            "type": "process",
             "label": "Windows build",
             "command": "bash",
             "windows": {
@@ -57,7 +57,7 @@
                 "$tsc"
             ],
             "presentation": {
-                "reveal": "never"
+                "reveal": "always"
             },
             "group": {
                 "kind": "build",
