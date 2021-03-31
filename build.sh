@@ -30,7 +30,7 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
     #==========================================================G++ COMMAND==========================================================#
     if [[ $OSTYPE == "linux-gnu" ]]; then
         $(  g++ -g -Wall -Wextra -march=native -std=gnu++17 -static -static-libgcc -static-libstdc++                            \
-            main.cppe                                                                                                            \
+            main.cpp                                                                                                            \
             -o $ObjectPath                                                                                                      \
             -D _LINUX_BUILD_=
         )
