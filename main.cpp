@@ -2,7 +2,7 @@
 #include <string>
 #include <fstream>
 
-#define GetProgramDirectory main
+#define OutputVersion main
 
 // Get target system from compiler argument -D _<OS>_BUILD_
 // These macros with _surrounding_underscores_ are only meant to be defined in the compiler
@@ -36,7 +36,7 @@ using namespace std;
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-int GetProgramDirectory(int argc, char **argv=(char**)" ")
+int OutputVersion()
 {
     #pragma GCC diagnostic pop
 
@@ -56,8 +56,8 @@ int GetProgramDirectory(int argc, char **argv=(char**)" ")
     if (!_bufsize) {
         cout << "Error getting path to the program" << endl;
     } else {
-        // Read the path backwards until we hit a slash to get the length of the filename
         programDirectory = _256charbuf;
+        // Read the path backwards until we hit a slash to get the length of the filename
         string::reverse_iterator i;
         int filenameSize = 0;
         for ( i = programDirectory.rbegin();

@@ -4,7 +4,7 @@
         { // LINUX BUILD
             "type": "process",
             "label": "Linux build",
-            "command": "shell",
+            "command": "bash",
             "windows": {
                 "command": "C:/msys64/usr/bin/bash.exe",
                 "options": {
