@@ -6,9 +6,9 @@
             "label": "Linux build",
             "command": "bash",
             "windows": {
-                "command": "C:/msys64/usr/bin/bash.exe",
+                "command": "msys64/usr/bin/bash.exe",
                 "options": {
-                    "CWD": "C:/msys64/mingw64/bin",
+                    "CWD": "msys64/usr/bin",
                     "MSYSTEM": "G++",
                     "CHERE_INVOKING": "1"
                 },
@@ -29,13 +29,41 @@
                 "isDefault": true
             }
         },
+        { // LINUX BUILD ASM
+            "type": "process",
+            "label": "Linux build ASM",
+            "command": "bash",
+            "windows": {
+                "command": "msys64/usr/bin/bash.exe",
+                "options": {
+                    "CWD": "msys64/usr/bin",
+                    "MSYSTEM": "G++",
+                    "CHERE_INVOKING": "1"
+                },
+            },
+            "args": [
+                "--login",
+                "-c",
+                "./build.sh --linux --clean --no-questions --asm-output main.cpp build/linux-asm/main"
+            ],
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
         { // WINDOWS BUILD 
             "type": "process",
             "label": "Windows build",
             "command": "bash",
             "windows": {
                 "options" : {
-                    "CWD": "C:/msys64/mingw64/bin",
+                    "CWD": "msys64/mingw64/bin",
                     "MSYSTEM": "MINGW64",
                     "CHERE_INVOKING": "1"
                 },
@@ -49,6 +77,38 @@
                 "--login",
                 "-c",
                 "./build.sh --windows --clean --no-questions main.cpp build/windows/main.exe"
+            ],
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        { // WINDOWS BUILD ASM
+            "type": "process",
+            "label": "Windows build ASM",
+            "command": "bash",
+            "windows": {
+                "options" : {
+                    "CWD": "msys64/mingw64/bin",
+                    "MSYSTEM": "MINGW64",
+                    "CHERE_INVOKING": "1"
+                },
+            },
+            "linux": {
+                "options" : {
+                    "CWD": "/usr/x86_64-w64-mingw32/bin"
+                }
+            },
+            "args": [
+                "--login",
+                "-c",
+                "./build.sh --windows --clean --no-questions --asm-output main.cpp build/windows-asm/main.exe"
             ],
             "problemMatcher": [
                 "$tsc"

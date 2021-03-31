@@ -1,0 +1,12 @@
+#
+# /etc/shells
+#
+
+/usr/bin/sh
+/usr/bin/bash
+
+# End of file
+/usr/bin/ash
+/usr/bin/dash
+/bin/zsh
+/usr/bin/zsh

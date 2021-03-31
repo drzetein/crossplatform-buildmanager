@@ -21,7 +21,6 @@
                 "path":
                 [
                     "${workspaceFolder}",
-                    "${workspaceFolder}/obj/linux",
                     "/usr/x86_64-w64-mingw32/include/**"
                 ],
                 "limitSymbolsToIncludedHeaders": false,
@@ -43,8 +42,7 @@
             {   
                 "path":
                 [
-                    "${workspaceFolder}",
-                    "${workspaceFolder}/obj/windows"
+                    "${workspaceFolder}"
                 ],
                 "limitSymbolsToIncludedHeaders": false,
                 "databaseFilename": ""

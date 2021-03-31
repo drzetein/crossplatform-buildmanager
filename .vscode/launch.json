@@ -9,14 +9,14 @@
             "name": "Launch Linux build",
             "type": "gdb",
             "request": "launch",
-            "program": "${workspaceFolder}/obj/linux/main"
+            "program": "${workspaceFolder}/build/linux/main"
         },
         {
             "preLaunchTask": "Windows build",
             "name": "Launch Windows build",
             "type": "gdb",
             "request": "launch",
-            "program": "${workspaceFolder}/obj/windows/main.exe"
-        } 
+            "program": "${workspaceFolder}/build/windows/main.exe"
+        }
     ]
 }

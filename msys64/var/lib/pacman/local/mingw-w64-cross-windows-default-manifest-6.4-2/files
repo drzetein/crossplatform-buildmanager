@@ -1,0 +1,9 @@
+%FILES%
+opt/
+opt/i686-w64-mingw32/
+opt/i686-w64-mingw32/lib/
+opt/i686-w64-mingw32/lib/default-manifest.o
+opt/x86_64-w64-mingw32/
+opt/x86_64-w64-mingw32/lib/
+opt/x86_64-w64-mingw32/lib/default-manifest.o
+

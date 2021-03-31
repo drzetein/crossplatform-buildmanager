@@ -1,0 +1,36 @@
+%NAME%
+mingw-w64-x86_64-glew
+
+%VERSION%
+2.2.0-2
+
+%BASE%
+mingw-w64-glew
+
+%DESC%
+GLEW, The OpenGL Extension Wrangler Library (mingw-w64)
+
+%URL%
+https://glew.sourceforge.io/
+
+%ARCH%
+any
+
+%BUILDDATE%
+1588539180
+
+%INSTALLDATE%
+1616612927
+
+%PACKAGER%
+Alexey Pavlov <alexpux@gmail.com>
+
+%SIZE%
+5703283
+
+%LICENSE%
+Modified BSD/MIT/GPL
+
+%VALIDATION%
+pgp
+
