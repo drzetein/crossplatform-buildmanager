@@ -18,6 +18,10 @@ A simple cross-platform build environment, with a program that outputs its own b
 - --clean  
   -c
 
+**3rd parameter (optional):  Don't ask before deleting**
+- --no-questions  
+  -y
+
 **Last parameter (required): path to the generated object/executable, including filename**
 ###### Example:
 > ./build.sh --linux   obj/linux/main  
