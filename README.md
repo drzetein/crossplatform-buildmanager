@@ -14,7 +14,7 @@ A simple cross-platform build environment, with a program that outputs its own b
 - --windows  
   -w
 
-**2nd parameter:  Delete all previous files in build directory**
+**2nd parameter (optional):  Delete all previous files in build directory**
 - --clean  
   -c
 
