@@ -18,7 +18,7 @@ A simple cross-platform build environment, with a program that outputs its own b
 - --clean  
   -c
 
-**3rd parameter (optional):  Don't ask before deleting**
+**3rd parameter (optional):  Don't ask for confirmation when deleting files with --clean**
 - --no-questions  
   -y
 
