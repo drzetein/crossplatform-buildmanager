@@ -17,6 +17,7 @@ if [[ ! -d obj ]]; then mkdir --verbose obj; fi
 
 # LINUX BUILDS #
 if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
+    echo "Building for Linux from $OSTYPE"
     if [[ $OSTYPE == "linux-gnu" ]]; then
         if [ ! -d $ObjectDirectory ]; then
             mkdir --verbose $ObjectDirectory;
@@ -26,24 +27,24 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
                 rm --verbose -R $ObjectDirectory/*;
             fi
         fi
-        echo "Building for Linux with G++"
-        #=========================================================G++ COMMAND=========================================================#
-            $(  g++ -g -Wall -Wextra -march=native -std=c++1z -static -static-libgcc -static-libstdc++                            \
-                main.cpp                                                                                                          \
-                -o $ObjectPath                                                                                                    \
-                -D _LINUX_BUILD_=
-            )
-        #=============================================================================================================================#
+    #==========================================================G++ COMMAND==========================================================#
+        $(  g++ -g -Wall -Wextra -march=native -std=gnu++17 -static -static-libgcc -static-libstdc++                          \
+            main.cpp                                                                                                          \
+            -o $ObjectPath                                                                                                    \
+            -D _LINUX_BUILD_=
+        )
+    #=============================================================================================================================#
         exitCode=$?
         if [ $exitCode != 0 ]; then
             echo "G++ exit code: $exitCode"
+            exit $exitCode
         else
             if [[ -f $ObjectPath.version ]]; then rm $ObjectPath.version; fi
-            echo "$ObjectFilename: built with native G++ from $OSTYPE on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $ObjectPath.version
+            echo "$ObjectFilename: built with G++ from $OSTYPE on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $ObjectPath.version
             echo "$(cat $ObjectPath.version)"
         fi
         exit 0
-    elif [[ $OSTYPE == "msys" ]]; then
+    elif [[ $OSTYPE == "msys" || $OSTYPE == "cygwin" ]]; then
         if [ ! -d $ObjectDirectory ]; then
             mkdir --verbose $ObjectDirectory;
         fi
@@ -52,20 +53,20 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
                 rm --verbose -R $ObjectDirectory/*;
             fi
         fi
-        echo "Building for Linux with G++"
-        #=========================================================G++ COMMAND=========================================================#
-            $(  C:/msys64/mingw64/bin/g++.exe -g -Wall -Wextra -march=native -std=c++1z -static -static-libgcc -static-libstdc++  \
-                main.cpp                                                                                                          \
-                -o $ObjectPath                                                                                                    \
-                -D _LINUX_BUILD_=
-            )
-        #=============================================================================================================================#
+    #==========================================================G++ COMMAND==========================================================#
+        $(  C:/msys64/usr/bin/g++.exe -g -Wall -Wextra -march=native -std=gnu++17 -static -static-libgcc -static-libstdc++      \
+            main.cpp                                                                                                            \
+            -o $ObjectPath                                                                                                      \
+            -D _LINUX_BUILD_=
+        )
+    #===============================================================================================================================#
         exitCode=$?
         if [ $exitCode != 0 ]; then
             echo "G++ exit code: $exitCode"
+            exit $exitCode
         else
             if [[ -f $ObjectPath.version ]]; then rm $ObjectPath.version; fi
-            echo "$ObjectFilename: built with MinGW/G++ from $OSTYPE on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $ObjectPath.version
+            echo "$ObjectFilename: built with G++ from $OSTYPE on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $ObjectPath.version
             echo "$(cat $ObjectPath.version)"
         fi
         exit 0
@@ -73,25 +74,25 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
 
 # WINDOWS BUILDS #
 elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
-    echo "Building for Windows from $OSTYPE with MinGW64/G++"
-
-    if [[ $OSTYPE == "msys" ]]; then
+    echo "Building for Windows from $OSTYPE"
+    if [[ $OSTYPE == "msys" || $OSTYPE == "cygwin" ]]; then
         if [ ! -d $ObjectDirectory ]; then
             mkdir --verbose $ObjectDirectory
         fi
         if [[ $2 == "--clean" ]] || [[ $2 == "-c" ]]; then
             if [[ -f $ObjectDirectory/* ]]; then rm --verbose -R $ObjectDirectory/*; fi
         fi
-    #=========================================================G++ COMMAND=========================================================#
-        $(  C:/msys64/mingw64/bin/g++.exe -g -Wall -Wextra -march=native -std=c++1z -static -static-libgcc -static-libstdc++  \
-            main.cpp                                                                                                          \
-            -o $ObjectPath                                                                                                    \
+    #==========================================================G++ COMMAND==========================================================#
+        $(  C:/msys64/mingw64/bin/g++.exe -g -Wall -Wextra -march=native -std=c++1z -static -static-libgcc -static-libstdc++    \
+            main.cpp                                                                                                            \
+            -o $ObjectPath                                                                                                      \
             -D _WINDOWS_BUILD_=
         )
-    #=============================================================================================================================#
+    #===============================================================================================================================#
         exitCode=$?
         if [ $exitCode != 0 ]; then
             echo "G++ exit code: $exitCode"
+            exit $exitCode
         else
             if [[ -f $ObjectPath.version ]]; then rm $ObjectPath.version; fi
             echo "$ObjectFilename: built with MinGW/G++ from $OSTYPE on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $ObjectPath.version
@@ -99,20 +100,23 @@ elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
         fi
         exit 0
     elif [[ $OSTYPE == "linux-gnu" ]]; then
-        if [ ! -d $ObjectDirectory ]; then mkdir --verbose $ObjectDirectory; fi
+        if [ ! -d $ObjectDirectory ]; then
+            mkdir --verbose $ObjectDirectory;
+        fi
         if [[ $2 == "--clean" ]] || [[ $2 == "-c" ]]; then
             if [[ -f $ObjectDirectory/* ]]; then rm --verbose -R $ObjectDirectory/*; fi
         fi
-    #=============================================================G++ COMMAND=====================================================#
+    #==========================================================G++ COMMAND==========================================================#
         $(  x86_64-w64-mingw32-g++ -g -Wall -Wextra -march=native -std=c++1z -static -static-libgcc -static-libstdc++         \
             main.cpp                                                                                                          \
             -o $ObjectPath                                                                                                    \
             -D _WINDOWS_BUILD_=
         )
-    #=============================================================================================================================#
+    #===============================================================================================================================#
         exitCode=$?
         if [[ $exitCode != 0 ]]; then
             echo "G++ exit code: $exitCode"
+            exit $exitCode
         else
             if [[ -f $ObjectPath.version ]]; then rm $ObjectPath.version; fi
             echo "$ObjectFilename: built with MinGW/G++ from $OSTYPE on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $ObjectPath.version

@@ -9,8 +9,8 @@
         {
             "name": "Linux",
             "intelliSenseMode": "linux-gcc-x64",
-            "cStandard": "c17",
-            "cppStandard": "c++17",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++17",
             "compilerPath": "g++",
             "includePath":
             [
@@ -31,12 +31,13 @@
         {
             "name": "Win32",
             "intelliSenseMode": "windows-gcc-x64",
-            "cStandard": "c17",
-            "cppStandard": "c++17",
+            "cStandard": "gnu17",
+            "cppStandard": "gnu++17",
             "compilerPath": "C:/msys64/usr/bin/g++.exe",
             "includePath":
             [
-                "C:/msys64/usr/include/**"
+                "C:/msys64/usr/include/**",
+                "C:/msys64/mingw64/include/**"
             ],
             "browse":
             {   

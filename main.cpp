@@ -36,11 +36,11 @@ using namespace std;
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-int GetProgramDirectory(int argc, char **argv=(char**)"")
+int GetProgramDirectory(int argc, char **argv=(char**)" ")
 {
     #pragma GCC diagnostic pop
 
-    size_t _bufsize = 256;
+    ssize_t _bufsize = 256;
     char _256charbuf[_bufsize];
     string programDirectory;
     string programName;

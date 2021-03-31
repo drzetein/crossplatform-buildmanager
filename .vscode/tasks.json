@@ -4,18 +4,17 @@
         { // LINUX BUILD
             "type": "process",
             "label": "Linux build",
-            "command": "bash",
+            "command": "shell",
             "windows": {
+                "command": "C:/msys64/usr/bin/bash.exe",
                 "options": {
                     "CWD": "C:/msys64/mingw64/bin",
-                    "MSYSTEM": "MINGW64",
+                    "MSYSTEM": "G++",
                     "CHERE_INVOKING": "1"
                 },
-                "args": [
-                    "--login",
-                ]
             },
             "args": [
+                "--login",
                 "-c",
                 "./build.sh --linux obj/linux/main"
             ],
@@ -40,9 +39,6 @@
                     "MSYSTEM": "MINGW64",
                     "CHERE_INVOKING": "1"
                 },
-                "args": [
-                    "--login",
-                ]
             },
             "linux": {
                 "options" : {
@@ -50,6 +46,7 @@
                 }
             },
             "args": [
+                "--login",
                 "-c",
                 "./build.sh --windows obj/windows/main.exe"
             ],
