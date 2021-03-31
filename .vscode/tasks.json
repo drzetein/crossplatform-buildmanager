@@ -16,7 +16,7 @@
             "args": [
                 "--login",
                 "-c",
-                "./build.sh --linux obj/linux/main"
+                "./build.sh --linux --clean obj/linux/main"
             ],
             "problemMatcher": [
                 "$tsc"
@@ -48,7 +48,7 @@
             "args": [
                 "--login",
                 "-c",
-                "./build.sh --windows obj/windows/main.exe"
+                "./build.sh --windows --clean obj/windows/main.exe"
             ],
             "problemMatcher": [
                 "$tsc"

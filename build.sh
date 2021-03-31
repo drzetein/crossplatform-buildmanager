@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Working directory: $(pwd)"
-echo ""
+echo ''
 if [[ $# < 2 ]]; then echo "Expected at least 2 arguments"; exit 1; fi
 
 Arguments=$@
@@ -11,15 +11,17 @@ ObjectDirectory=${ObjectPath%$ObjectFilename}
 echo "Object filename:   $ObjectFilename"
 echo "Object directory:  $ObjectDirectory"
 echo "Object path:       $ObjectPath"
-echo ""
+echo ''
 
 if [ ! -d $ObjectDirectory ]; then
-    mkdir --verbose $ObjectDirectory;
+    mkdir -p --verbose $ObjectDirectory;
 fi
+
 if [[ $2 == "--clean" ]] || [[ $2 == "-c" ]]; then
-    if [[ -f $ObjectDirectory/* ]]; then
-        rm --verbose -R $ObjectDirectory/*;
-    fi
+    for file in $ObjectDirectory; do
+        rm -R --verbose $ObjectDirectory*;
+    done
+    echo ''
 fi
 
 # LINUX BUILD #
@@ -28,7 +30,7 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
     #==========================================================G++ COMMAND==========================================================#
     if [[ $OSTYPE == "linux-gnu" ]]; then
         $(  g++ -g -Wall -Wextra -march=native -std=gnu++17 -static -static-libgcc -static-libstdc++                            \
-            main.cpp                                                                                                            \
+            main.cppe                                                                                                            \
             -o $ObjectPath                                                                                                      \
             -D _LINUX_BUILD_=
         )
@@ -39,8 +41,8 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
             -D _LINUX_BUILD_=
         )
     #===============================================================================================================================#
-    exitCode=$?
     fi
+    exitCode=$?
 
 # WINDOWS BUILD #
 elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
@@ -52,7 +54,6 @@ elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
             -o $ObjectPath                                                                                                      \
             -D _WINDOWS_BUILD_=
         )
-        exitCode=$?
     elif [[ $OSTYPE == "linux-gnu" ]]; then
         $(  x86_64-w64-mingw32-g++ -g -Wall -Wextra -march=native -std=c++17 -static -static-libgcc -static-libstdc++           \
             main.cpp                                                                                                            \
@@ -60,19 +61,18 @@ elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
             -D _WINDOWS_BUILD_=
         )
     #===============================================================================================================================#
-        exitCode=$?
     fi
+    exitCode=$?
 else
     echo "Error: Unknown target operational system ${1#--}. Please specify either --linux or --windows as the first argument."
     exit 1
 fi
 
 # POST BUILD TASKS #
-if [ $exitCode != 0 ]; then
+if [[ $exitCode != 0 ]]; then
     echo "G++ exit code: $exitCode"
     exit $exitCode
 else
-    if [[ -f $ObjectPath.version ]]; then rm $ObjectPath.version; fi
     echo "$ObjectFilename: built with G++ from $OSTYPE on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $ObjectPath.version
     echo "$(cat $ObjectPath.version)"
     exit 0
