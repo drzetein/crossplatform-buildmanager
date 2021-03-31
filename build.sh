@@ -1,50 +1,58 @@
 #!/bin/bash
+if [[ $# < 3 ]]; then echo "Expected at least 3 arguments"; exit 1; fi
+
 echo "Working directory: $(pwd)"
-echo ''
-if [[ $# < 2 ]]; then echo "Expected at least 2 arguments"; exit 1; fi
-
 Arguments=$@
-BuildPath=${Arguments//-* /}
+Files=$(echo $Arguments | sed -e "s/-[a-zA-Z\-]*//g")
+SourceFiles=${Files% *}
+BuildPath=${Files##* }
 BuildFilename=${BuildPath##*/}
-BuildDirectory=${BuildPath%$BuildFilename}
+BuildDirectory=${BuildPath%%$BuildFilename}
+ReturnFromBuildDirectory=$(echo $BuildDirectory | sed -e "s/[a-zA-Z0-9]*\//..\//g")
 
+echo "Source files:   $SourceFiles"
+echo "Build directory:   $BuildDirectory"
+echo "Build filename:    $BuildFilename"
 
-echo "Build filename:   $BuildFilename"
-echo "Build directory:  $BuildDirectory"
-echo "Build path:       $BuildPath"
-echo ''
-
-if [[ $3 == "--no-questions" || $3 == "-y" ]]; then
-    i=""
-else
-    i="-i"
-fi
-
-if [[ $2 == "--clean" || $2 == "-c" ]]; then
-    for file in $BuildDirectory*; do
-        rm -R $i --verbose $file
-    done
-    echo ''
-fi
-
-if [ ! -d $BuildDirectory ]; then
+if [[ ! -d $BuildDirectory ]]; then
     mkdir -p --verbose $BuildDirectory;
 fi
 
+if [[ $2 == "--clean" || $2 == "-c" ]]; then
+    if [[ $3 == "--no-questions" || $3 == "-y" ]]; then
+        questions=""
+    else
+        questions="-i"
+    fi
+    FilesToDelete=$(ls $BuildDirectory)
+    if [[ $FilesToDelete != '' ]]; then
+        cd $BuildDirectory
+        echo "Working directory: $(pwd)"
+        rm -r --verbose $questions $FilesToDelete
+        echo "Returning $ReturnFromBuildDirectory"
+        cd $ReturnFromBuildDirectory
+    fi
+    echo ''
+fi
+
+# COMMON ARGUMENTS #
+CommonArguments="-g -Wall -Wextra -march=native -static -static-libgcc -static-libstdc++"
+CommonLinuxArguments="-std=gnu++17"
+CommonWindowsArguments="-std=c++17"
 
 # LINUX BUILD #
 if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
-    echo "Building for Linux from $OSTYPE"
+    echo "Building $BuildFilename for Linux from $OSTYPE"
     #==========================================================G++ COMMAND==========================================================#
     if [[ $OSTYPE == "linux-gnu" ]]; then
-        $(  g++ -g -Wall -Wextra -march=native -std=gnu++17 -static -static-libgcc -static-libstdc++                            \
-            main.cpp                                                                                                            \
+        $(  g++ $CommonArguments $CommonLinuxArguments                                                                          \
+            $SourceFiles                                                                                                        \
             -o $BuildPath                                                                                                       \
             -D _LINUX_BUILD_=
         )
     elif [[ $OSTYPE == "msys" || $OSTYPE == "cygwin" ]]; then
-        $(  C:/msys64/usr/bin/g++.exe -g -Wall -Wextra -march=native -std=gnu++17 -static -static-libgcc -static-libstdc++      \
-            main.cpp                                                                                                            \
+        $(  C:/msys64/usr/bin/g++.exe $CommonArguments $CommonLinuxArguments                                                    \
+            $SourceFiles                                                                                                        \
             -o $BuildPath                                                                                                       \
             -D _LINUX_BUILD_=
         )
@@ -54,17 +62,17 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
 
 # WINDOWS BUILD #
 elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
-    echo "Building for Windows from $OSTYPE"
+    echo "Building $BuildFilename for Windows from $OSTYPE"
     if [[ $OSTYPE == "msys" || $OSTYPE == "cygwin" ]]; then
     #==========================================================G++ COMMAND==========================================================#
-        $(  C:/msys64/mingw64/bin/g++.exe -g -Wall -Wextra -march=native -std=c++17 -static -static-libgcc -static-libstdc++    \
-            main.cpp                                                                                                            \
-            -o $BuildPath                                                                                                       \
+        $(  C:/msys64/mingw64/bin/g++.exe $CommonArguments $CommonWindowsArguments                                              \
+            "$SourceFiles"                                                                                                      \
+            -o "$BuildPath"                                                                                                     \
             -D _WINDOWS_BUILD_=
         )
     elif [[ $OSTYPE == "linux-gnu" ]]; then
-        $(  x86_64-w64-mingw32-g++ -g -Wall -Wextra -march=native -std=c++17 -static -static-libgcc -static-libstdc++           \
-            main.cpp                                                                                                            \
+        $(  x86_64-w64-mingw32-g++ $CommonArguments $CommonWindowsArguments                                                     \
+            $SourceFiles                                                                                                        \
             -o $BuildPath                                                                                                       \
             -D _WINDOWS_BUILD_=
         )

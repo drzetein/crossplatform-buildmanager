@@ -18,14 +18,14 @@ A simple cross-platform build environment, with a program that outputs its own b
 - --clean  
   -c
 
-**3rd parameter (optional):  Don't ask for confirmation when deleting files with --clean**
+**3rd parameter (optional): Don't ask for confirmation when deleting files with --clean**
 - --no-questions  
   -y
 
-**Last parameter (required): path to the generated object/executable, including filename**
+**Last parameters (required): source files and path to the generated binary, including filename**
 ###### Example:
-> ./build.sh --linux   obj/linux/main  
-> ./build.sh --windows obj/windows/main.exe 
+> ./build.sh --linux   main.cpp foo.cpp bar.cpp obj/linux/main  
+> ./build.sh --windows main.cpp foo.cpp bar.cpp obj/windows/main.exe  
 
 A \*.version file named after the generated object will be created in the target directory, containing build details  
 (e.g.: *main.version* or *main.exe.version*).
