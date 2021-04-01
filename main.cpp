@@ -51,8 +51,8 @@ int main()
     } else {
         programPath = _256charbuf;
         // Read the path backwards until we hit a slash 
-        string::reverse_iterator i;
         int filenameSize = 0;
+        string::reverse_iterator i;
         for ( i = programPath.rbegin();
               *i.base() != '\\' && *i.base() != '/';
               i++, filenameSize++
@@ -63,9 +63,12 @@ int main()
         for (int j = 0; j < filenameSize; i--, j++) {
             programName+=*i.base();
         }
+        
+        // Remove the filename from the path to get the directory
+        string programDirectory = programPath.erase(programPath.length() - filenameSize);
 
         // Read version file
-        ifstream version(programPath + ".version", ios::in);
+        ifstream version(programDirectory + programName + ".version", ios::in);
         if (version.is_open()) { 
             version.getline(_256charbuf, 256, '\0');
             cout << _256charbuf;
