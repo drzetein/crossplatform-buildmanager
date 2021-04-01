@@ -2,8 +2,6 @@
 #include <string>
 #include <fstream>
 
-#define OutputVersion main
-
 // Get target system from compiler argument -D _<OS>_BUILD_
 // These macros with _surrounding_underscores_ are only meant to be defined in the compiler
 // checking for them in code may lead to undefined behaviour
@@ -34,12 +32,11 @@
 
 using namespace std;
 
-int OutputVersion()
+int main()
 {
     ssize_t _bufsize = 256;
     char _256charbuf[_bufsize];
-    string programDirectory;
-    string programName;
+    string programPath, programName;
 
     // Get program path
     #ifdef LINUX_BUILD
@@ -52,11 +49,11 @@ int OutputVersion()
     if (!_bufsize) {
         cout << "Error getting path to the program" << endl;
     } else {
-        programDirectory = _256charbuf;
-        // Read the path backwards until we hit a slash to get the length of the filename
+        programPath = _256charbuf;
+        // Read the path backwards until we hit a slash 
         string::reverse_iterator i;
         int filenameSize = 0;
-        for ( i = programDirectory.rbegin();
+        for ( i = programPath.rbegin();
               *i.base() != '\\' && *i.base() != '/';
               i++, filenameSize++
         );
@@ -67,11 +64,8 @@ int OutputVersion()
             programName+=*i.base();
         }
 
-        // Remove the filename from the path to get the directory
-        programDirectory.erase(programDirectory.length() - filenameSize);
-
-        // Use the directory string to open local files
-        ifstream version(programDirectory + programName + ".version", ios::in);
+        // Read version file
+        ifstream version(programPath + ".version", ios::in);
         if (version.is_open()) { 
             version.getline(_256charbuf, 256, '\0');
             cout << _256charbuf;
