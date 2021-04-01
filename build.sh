@@ -14,11 +14,12 @@ Files=$(echo $Arguments | sed -e "s/-[a-zA-Z\-]* //g")
 SourceFiles=${Files% *}
 BuildPath=${Files##* }
 BuildFilename=${BuildPath##*/}
-BuildDirectory=${BuildPath%%/$BuildFilename}
-ReturnFromBuildDirectory=$(echo $BuildDirectory | sed -e "s/[a-zA-Z0-9]*\//..\//g")
+BuildDirectory=${BuildPath%%\/$BuildFilename}
+ReturnFromBuildDirectory=${BuildDirectory//[[:print:]]*\/[[:print:]]*/..\/..}
 
-CommonArguments=$(echo $(cat build.config) | grep -oP "CommonArguments=\"\K.*?(?=\")")
-CommonLibraries=$(echo $(cat build.config) | grep -oP "CommonLibraries=\"\K.*?(?=\")")
+CopyToBuildFolder=$(echo $(cat build.config)  | grep -oP "CopyToBuildFolder=\"\K.*?(?=\")")
+CommonArguments=$(echo $(cat build.config)    | grep -oP "CommonArguments=\"\K.*?(?=\")")
+CommonLibraries=$(echo $(cat build.config)    | grep -oP "CommonLibraries=\"\K.*?(?=\")")
 
 echo "Source files:      $SourceFiles"
 echo "Build directory:   $BuildDirectory"
@@ -26,16 +27,18 @@ echo "Build filename:    $BuildFilename"
 echo "Common arguments:  \"$CommonArguments\""
 echo "Common libraries:  \"$CommonLibraries\""
 
+echo "Post build tasks:  \"$UserDefinedPostBuildTasks\""
+
 if [[ ! -d $BuildDirectory && ! $BuildDirectory == '' ]]; then
     mkdir -p --verbose $BuildDirectory;
 fi
 
 if [[ "$Arguments" == *" --clean"* || "$Arguments" == *" -c"* ]]; then
     if   [[ $BuildDirectory == '' ]]; then
-        echo "Error: refused to run --clean inside source directory, that would be a disaster."
+        echo "Error: refused to run --clean inside source directory."
         exit 1
     elif [[ $(readlink -f "$BuildDirectory") == $(pwd) ]]; then
-        echo "Error: refused to run --clean inside source directory, that would be a disaster."
+        echo "Error: refused to run --clean inside source directory."
         exit 1
     elif [[ "$Arguments" == *" --no-questions"* || "$Arguments" == *" -y"* ]]; then
         questions=""
@@ -61,15 +64,15 @@ else
 fi
 
 # LINUX BUILD #
-if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
+if [[ $1 == "--linux" || $1 == "-l" ]]; then
     echo "Building $BuildFilename for Linux from $OSTYPE"
-    LinuxArguments=$(echo $(cat build.config) | grep -oP "LinuxArguments=\"\K.*?(?=\")")
-    LinuxLibraries=$(echo $(cat build.config) | grep -oP "LinuxLibraries=\"\K.*?(?=\")")
+    LinuxArguments=$(echo $(cat build.config) | grep -oP 'LinuxArguments=\"\K.*?(?=\")')
+    LinuxLibraries=$(echo $(cat build.config) | grep -oP 'LinuxLibraries=\"\K.*?(?=\")')
     echo "Linux arguments:   \"$LinuxArguments\""
     echo "Linux libraries:   \"$LinuxLibraries\""
     #==========================================================G++ COMMAND==========================================================#
     if [[ $OSTYPE == "linux-gnu" ]]; then
-        $(  g++ $AssemblerOutput $CommonArguments $LinuxArguments                                                               \
+        $(  g++ -v $AssemblerOutput $CommonArguments $LinuxArguments                                                            \
             $SourceFiles                                                                                                        \
             -o $BuildPath                                                                                                       \
             $CommonLibraries                                                                                                    \
@@ -82,7 +85,7 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
             -o $BuildPath                                                                                                       \
             $CommonLibraries                                                                                                    \
             $LinuxLibraries                                                                                                     \
-            -D _LINUX_BUILD_
+            -D _LINUX_BUILD_=
         )
     #===============================================================================================================================#
     fi
@@ -128,9 +131,7 @@ if [[ $exitCode != 0 ]]; then
     echo "G++ exit code: $exitCode"
     exit $exitCode
 else
-    PostBuildTasks=$(echo $(cat build.config)  | grep -oP "PostBuildTasks=\"\K.*?(?=\")")
-    echo "Post build tasks: \"$PostBuildTasks\""
-    $($PostBuildTasks)
+    if [[ $CopyToBuildFolder != '' ]]; then for file in $CopyToBuildFolder; do cp -r $CopyToBuildFolder $BuildDirectory; done; fi
     echo "$BuildFilename: built from $OSTYPE with G++ on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $BuildPath.version
     echo "$(cat $BuildPath.version)"
     exit 0
