@@ -34,12 +34,8 @@
 
 using namespace std;
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
 int OutputVersion()
 {
-    #pragma GCC diagnostic pop
-
     ssize_t _bufsize = 256;
     char _256charbuf[_bufsize];
     string programDirectory;
