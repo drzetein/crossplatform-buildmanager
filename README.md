@@ -15,14 +15,14 @@ A simple cross-platform build environment, with a program that outputs its own b
   -w
 
 **Delete all previous files in build directory**
-- --clean  f
+- --clean  
   -c
 
 **Don't ask for confirmation when deleting files with --clean**
 - --no-questions  
   -y
 
-**Generate Assembler code instead of a binary**
+**Generate Assembler file instead of a binary**
 - --asm-output
 
 **Last parameters (required): source files and target path, including filename**
