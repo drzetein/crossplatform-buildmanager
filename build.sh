@@ -46,7 +46,6 @@ if [[ "$Arguments" == *" --clean"* || "$Arguments" == *" -c"* ]]; then
     fi
     echo ''
 fi
-exit 1
 
 if [[ "$Arguments" == *" --asm-output"* ]]; then 
     AssemblerOutput="-O2 -S -fverbose-asm"
