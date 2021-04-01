@@ -17,7 +17,6 @@ BuildFilename=${BuildPath##*/}
 BuildDirectory=${BuildPath%%/$BuildFilename}
 ReturnFromBuildDirectory=$(echo $BuildDirectory | sed -e "s/[a-zA-Z0-9]*\//..\//g")
 
-PostBuildTasks=$(echo $(cat build.config)  | grep -oP "PostBuildTasks=\"\K.*?(?=\")")
 CommonArguments=$(echo $(cat build.config) | grep -oP "CommonArguments=\"\K.*?(?=\")")
 CommonLibraries=$(echo $(cat build.config) | grep -oP "CommonLibraries=\"\K.*?(?=\")")
 
@@ -26,7 +25,6 @@ echo "Build directory:   $BuildDirectory"
 echo "Build filename:    $BuildFilename"
 echo "Common arguments:  \"$CommonArguments\""
 echo "Common libraries:  \"$CommonLibraries\""
-echo "Post build tasks:  \"$PostBuildTasks\""
 
 if [[ ! -d $BuildDirectory && ! $BuildDirectory == '' ]]; then
     mkdir -p --verbose $BuildDirectory;
@@ -130,6 +128,8 @@ if [[ $exitCode != 0 ]]; then
     echo "G++ exit code: $exitCode"
     exit $exitCode
 else
+    PostBuildTasks=$(echo $(cat build.config)  | grep -oP "PostBuildTasks=\"\K.*?(?=\")")
+    echo "Post build tasks: \"$PostBuildTasks\""
     $($PostBuildTasks)
     echo "$BuildFilename: built from $OSTYPE with G++ on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $BuildPath.version
     echo "$(cat $BuildPath.version)"
