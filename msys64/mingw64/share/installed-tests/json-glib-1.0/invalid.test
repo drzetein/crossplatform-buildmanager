@@ -1,3 +1,0 @@
-[Test]
-Type=session
-Exec=/mingw64/libexec/installed-tests/json-glib-1.0/invalid

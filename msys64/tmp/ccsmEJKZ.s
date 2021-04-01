@@ -1,1 +1,0 @@
-	.file	"motor.cpp"
