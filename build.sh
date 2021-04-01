@@ -10,15 +10,23 @@ fi
 echo "Working directory: $(pwd)"
 Arguments=" $@"
 Files=$(echo $Arguments | sed -e "s/-[a-zA-Z\-]* //g")
+
 SourceFiles=${Files% *}
 BuildPath=${Files##* }
 BuildFilename=${BuildPath##*/}
-BuildDirectory=${BuildPath%%$BuildFilename}
+BuildDirectory=${BuildPath%%/$BuildFilename}
 ReturnFromBuildDirectory=$(echo $BuildDirectory | sed -e "s/[a-zA-Z0-9]*\//..\//g")
+
+PostBuildTasks=$(echo $(cat build.config)  | grep -oP "PostBuildTasks=\"\K.*?(?=\")")
+CommonArguments=$(echo $(cat build.config) | grep -oP "CommonArguments=\"\K.*?(?=\")")
+CommonLibraries=$(echo $(cat build.config) | grep -oP "CommonLibraries=\"\K.*?(?=\")")
 
 echo "Source files:      $SourceFiles"
 echo "Build directory:   $BuildDirectory"
 echo "Build filename:    $BuildFilename"
+echo "Common arguments:  \"$CommonArguments\""
+echo "Common libraries:  \"$CommonLibraries\""
+echo "Post build tasks:  \"$PostBuildTasks\""
 
 if [[ ! -d $BuildDirectory && ! $BuildDirectory == '' ]]; then
     mkdir -p --verbose $BuildDirectory;
@@ -54,25 +62,28 @@ else
     AssemblerOutput=""
 fi
 
-# COMMON ARGUMENTS #
-CommonArguments="-g -Wall -Wextra -march=native -static -static-libgcc -static-libstdc++"
-CommonLinuxArguments="-std=gnu++17"
-CommonWindowsArguments="-std=c++17"
-
 # LINUX BUILD #
 if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
     echo "Building $BuildFilename for Linux from $OSTYPE"
+    LinuxArguments=$(echo $(cat build.config) | grep -oP "LinuxArguments=\"\K.*?(?=\")")
+    LinuxLibraries=$(echo $(cat build.config) | grep -oP "LinuxLibraries=\"\K.*?(?=\")")
+    echo "Linux arguments:   \"$LinuxArguments\""
+    echo "Linux libraries:   \"$LinuxLibraries\""
     #==========================================================G++ COMMAND==========================================================#
     if [[ $OSTYPE == "linux-gnu" ]]; then
-        $(  g++ $AssemblerOutput $CommonArguments $CommonLinuxArguments                                                         \
+        $(  g++ $AssemblerOutput $CommonArguments $LinuxArguments                                                               \
             $SourceFiles                                                                                                        \
             -o $BuildPath                                                                                                       \
+            $CommonLibraries                                                                                                    \
+            $LinuxLibraries                                                                                                     \
             -D _LINUX_BUILD_=
         )
     elif [[ $OSTYPE == "msys" || $OSTYPE == "cygwin" ]]; then
-        $(  C:/msys64/usr/bin/g++.exe $AssemblerOutput $CommonArguments $CommonLinuxArguments                                   \
+        $(  C:/msys64/usr/bin/g++.exe $AssemblerOutput $CommonArguments $LinuxArguments                                         \
             $SourceFiles                                                                                                        \
             -o $BuildPath                                                                                                       \
+            $CommonLibraries                                                                                                    \
+            $LinuxLibraries                                                                                                     \
             -D _LINUX_BUILD_
         )
     #===============================================================================================================================#
@@ -85,17 +96,25 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
 # WINDOWS BUILD #
 elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
     echo "Building $BuildFilename for Windows from $OSTYPE"
+    WindowsArguments=$(echo $(cat build.config) | grep -oP "WindowsArguments=\"\K.*?(?=\")")
+    WindowsLibraries=$(echo $(cat build.config) | grep -oP "WindowsLibraries=\"\K.*?(?=\")")
+    echo "Windows arguments: \"$WindowsArguments\""
+    echo "Windows libraries: \"$WindowsLibraries\""
     if [[ $OSTYPE == "msys" || $OSTYPE == "cygwin" ]]; then
     #==========================================================G++ COMMAND==========================================================#
-        $(  C:/msys64/mingw64/bin/g++.exe $AssemblerOutput $CommonArguments $CommonWindowsArguments                             \
-            "$SourceFiles"                                                                                                      \
-            -o "$BuildPath"                                                                                                     \
+        $(  C:/msys64/mingw64/bin/g++.exe $AssemblerOutput $CommonArguments $WindowsArguments                                   \
+            $SourceFiles                                                                                                        \
+            -o $BuildPath                                                                                                       \
+            $CommonLibraries                                                                                                    \
+            $WindowsLibraries                                                                                                   \
             -D _WINDOWS_BUILD_=
         )
     elif [[ $OSTYPE == "linux-gnu" ]]; then
-        $(  x86_64-w64-mingw32-g++ $AssemblerOutput $CommonArguments $CommonWindowsArguments                                    \
+        $(  x86_64-w64-mingw32-g++ $AssemblerOutput $CommonArguments $WindowsArguments                                          \
             $SourceFiles                                                                                                        \
             -o $BuildPath                                                                                                       \
+            $CommonLibraries                                                                                                    \
+            $WindowsLibraries                                                                                                   \
             -D _WINDOWS_BUILD_=
         )
     #===============================================================================================================================#
@@ -111,6 +130,7 @@ if [[ $exitCode != 0 ]]; then
     echo "G++ exit code: $exitCode"
     exit $exitCode
 else
+    $($PostBuildTasks)
     echo "$BuildFilename: built from $OSTYPE with G++ on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $BuildPath.version
     echo "$(cat $BuildPath.version)"
     exit 0
