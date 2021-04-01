@@ -64,7 +64,7 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
             -D _LINUX_BUILD_=
         )
     elif [[ $OSTYPE == "msys" || $OSTYPE == "cygwin" ]]; then
-        $(  msys64/usr/bin/g++.exe $AssemblerOutput $CommonArguments $CommonLinuxArguments                                      \
+        $(  C:/msys64/usr/bin/g++.exe $AssemblerOutput $CommonArguments $CommonLinuxArguments                                      \
             $SourceFiles                                                                                                        \
             -o $BuildPath                                                                                                       \
             -D _LINUX_BUILD_
@@ -81,7 +81,7 @@ elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
     echo "Building $BuildFilename for Windows from $OSTYPE"
     if [[ $OSTYPE == "msys" || $OSTYPE == "cygwin" ]]; then
     #==========================================================G++ COMMAND==========================================================#
-        $(  msys64/mingw64/bin/g++.exe $CommonArguments $CommonWindowsArguments                                                 \
+        $(  C:/msys64/mingw64/bin/g++.exe $CommonArguments $CommonWindowsArguments                                                 \
             "$SourceFiles"                                                                                                      \
             -o "$BuildPath"                                                                                                     \
             -D _WINDOWS_BUILD_=
