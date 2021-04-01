@@ -6,9 +6,9 @@
             "label": "Linux build",
             "command": "bash",
             "windows": {
-                "command": "msys64/usr/bin/bash.exe",
+                "command": "C:/msys64/usr/bin/bash.exe",
                 "options": {
-                    "CWD": "msys64/usr/bin",
+                    "CWD": "C:/msys64/usr/bin",
                     "MSYSTEM": "G++",
                     "CHERE_INVOKING": "1"
                 },
@@ -34,9 +34,9 @@
             "label": "Linux build ASM",
             "command": "bash",
             "windows": {
-                "command": "msys64/usr/bin/bash.exe",
+                "command": "C:/msys64/usr/bin/bash.exe",
                 "options": {
-                    "CWD": "msys64/usr/bin",
+                    "CWD": "C:/msys64/usr/bin",
                     "MSYSTEM": "G++",
                     "CHERE_INVOKING": "1"
                 },
@@ -63,7 +63,7 @@
             "command": "bash",
             "windows": {
                 "options" : {
-                    "CWD": "msys64/mingw64/bin",
+                    "CWD": "C:/msys64/mingw64/bin",
                     "MSYSTEM": "MINGW64",
                     "CHERE_INVOKING": "1"
                 },
@@ -95,7 +95,7 @@
             "command": "bash",
             "windows": {
                 "options" : {
-                    "CWD": "msys64/mingw64/bin",
+                    "CWD": "C:/msys64/mingw64/bin",
                     "MSYSTEM": "MINGW64",
                     "CHERE_INVOKING": "1"
                 },
