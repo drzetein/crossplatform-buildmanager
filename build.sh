@@ -71,7 +71,7 @@ fi
 #=============#
 # LINUX BUILD #
 #=============#
-if [[ $1 == "--linux" || $1 == "-l" ]]; then
+if [[ $1 == "--linux" || $1 == "-L" ]]; then
     echo "Building $BuildFilename for Linux from $OSTYPE"
     # Get Linux specific build settigs from build.config #
     LinuxArguments=$(echo $(cat build.config) | grep -oP 'LinuxArguments=\"\K.*?(?=\")')
@@ -105,7 +105,7 @@ if [[ $1 == "--linux" || $1 == "-l" ]]; then
 #===============#
 # Windows Build #
 #===============#
-elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
+elif [[ $1 == "--windows" ]] || [[ $1 == "-W" ]]; then
     echo "Building $BuildFilename for Windows from $OSTYPE"
     # Get windows specific build settigs from build.config #
     WindowsArguments=$(echo $(cat build.config) | grep -oP "WindowsArguments=\"\K.*?(?=\")")
@@ -133,7 +133,8 @@ elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
     fi
     exitCode=$?
 else
-    echo "Error: Unknown target operational system ${1#--}. Please specify either --linux or --windows as the first argument."
+    echo "Error: Unknown target OS option: '${1//-/}'
+Please specify either --linux (-L) or --windows (-W) as the first argument."
     exit 1
 fi
 
