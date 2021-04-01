@@ -8,18 +8,21 @@ Supported systems are: 'linux-gnu' 'msys' 'cygwin'
 fi
 
 echo "Working directory: $(pwd)"
+
+# Setup this script's arguments #
 Arguments=" $@"
 Files=$(echo $Arguments | sed -e "s/-[a-zA-Z\-]* //g")
-
 SourceFiles=${Files% *}
 BuildPath=${Files##* }
 BuildFilename=${BuildPath##*/}
-BuildDirectory=${BuildPath%%\/$BuildFilename}
-ReturnFromBuildDirectory=${BuildDirectory//[[:print:]]*\/[[:print:]]*/..\/..}
+BuildDirectory=${BuildPath%%$BuildFilename}
 
-CopyToBuildFolder=$(echo $(cat build.config)  | grep -oP "CopyToBuildFolder=\"\K.*?(?=\")")
-CommonArguments=$(echo $(cat build.config)    | grep -oP "CommonArguments=\"\K.*?(?=\")")
-CommonLibraries=$(echo $(cat build.config)    | grep -oP "CommonLibraries=\"\K.*?(?=\")")
+ReturnFromBuildDirectory=$(echo $BuildDirectory | sed -e "s/[^\/]*\?\//..\//g" )
+
+# Get common build settigs from build.config #
+CopyToBuildFolder=$(echo $(cat build.config) | grep -oP "CopyToBuildFolder=\"\K.*?(?=\")")
+CommonArguments=$(echo $(cat build.config)   | grep -oP "CommonArguments=\"\K.*?(?=\")")
+CommonLibraries=$(echo $(cat build.config)   | grep -oP "CommonLibraries=\"\K.*?(?=\")")
 
 echo "Source files:      $SourceFiles"
 echo "Build directory:   $BuildDirectory"
@@ -27,35 +30,37 @@ echo "Build filename:    $BuildFilename"
 echo "Common arguments:  \"$CommonArguments\""
 echo "Common libraries:  \"$CommonLibraries\""
 
-echo "Post build tasks:  \"$UserDefinedPostBuildTasks\""
-
 if [[ ! -d $BuildDirectory && ! $BuildDirectory == '' ]]; then
     mkdir -p --verbose $BuildDirectory;
 fi
 
 if [[ "$Arguments" == *" --clean"* || "$Arguments" == *" -c"* ]]; then
+    # Prevent accidentally cleaning in source directory #
     if   [[ $BuildDirectory == '' ]]; then
         echo "Error: refused to run --clean inside source directory."
         exit 1
     elif [[ $(readlink -f "$BuildDirectory") == $(pwd) ]]; then
         echo "Error: refused to run --clean inside source directory."
         exit 1
+    # Should any questions be asked before deleting? #
     elif [[ "$Arguments" == *" --no-questions"* || "$Arguments" == *" -y"* ]]; then
-        questions=""
+        Questions=""
     else
-        questions="-i"
+        Questions="-i"
     fi
+    # Clean build directory #
     FilesToDelete=$(ls $BuildDirectory)
     if [[ $FilesToDelete != '' ]]; then
         cd $BuildDirectory
         echo "Working directory: $(pwd)"
-        rm -r --verbose $questions $FilesToDelete
+        rm -r --verbose $Questions $FilesToDelete
         echo "Returning $ReturnFromBuildDirectory"
         cd $ReturnFromBuildDirectory
     fi
     echo ''
 fi
 
+# Check if compiler should output ASM #
 if [[ "$Arguments" == *" --asm-output"* ]]; then 
     AssemblerOutput="-O2 -S -fverbose-asm"
     BuildPath="$BuildPath.s"
@@ -63,16 +68,19 @@ else
     AssemblerOutput=""
 fi
 
+#=============#
 # LINUX BUILD #
+#=============#
 if [[ $1 == "--linux" || $1 == "-l" ]]; then
     echo "Building $BuildFilename for Linux from $OSTYPE"
+    # Get Linux specific build settigs from build.config #
     LinuxArguments=$(echo $(cat build.config) | grep -oP 'LinuxArguments=\"\K.*?(?=\")')
     LinuxLibraries=$(echo $(cat build.config) | grep -oP 'LinuxLibraries=\"\K.*?(?=\")')
     echo "Linux arguments:   \"$LinuxArguments\""
     echo "Linux libraries:   \"$LinuxLibraries\""
     #==========================================================G++ COMMAND==========================================================#
     if [[ $OSTYPE == "linux-gnu" ]]; then
-        $(  g++ -v $AssemblerOutput $CommonArguments $LinuxArguments                                                            \
+        $(  g++ $AssemblerOutput $CommonArguments $LinuxArguments                                                               \
             $SourceFiles                                                                                                        \
             -o $BuildPath                                                                                                       \
             $CommonLibraries                                                                                                    \
@@ -94,9 +102,12 @@ if [[ $1 == "--linux" || $1 == "-l" ]]; then
         mv "$BuildPath.exe" "$BuildPath"
     fi
 
-# WINDOWS BUILD #
+#===============#
+# Windows Build #
+#===============#
 elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
     echo "Building $BuildFilename for Windows from $OSTYPE"
+    # Get windows specific build settigs from build.config #
     WindowsArguments=$(echo $(cat build.config) | grep -oP "WindowsArguments=\"\K.*?(?=\")")
     WindowsLibraries=$(echo $(cat build.config) | grep -oP "WindowsLibraries=\"\K.*?(?=\")")
     echo "Windows arguments: \"$WindowsArguments\""
@@ -126,7 +137,7 @@ else
     exit 1
 fi
 
-# POST BUILD TASKS #
+# Post-build tasks #
 if [[ $exitCode != 0 ]]; then
     echo "G++ exit code: $exitCode"
     exit $exitCode
