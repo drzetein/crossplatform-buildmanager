@@ -8,7 +8,7 @@ Supported systems are: 'linux-gnu' 'msys' 'cygwin'
 fi
 
 echo "Working directory: $(pwd)"
-Arguments=$@
+Arguments=" $@"
 Files=$(echo $Arguments | sed -e "s/-[a-zA-Z\-]* //g")
 SourceFiles=${Files% *}
 BuildPath=${Files##* }
@@ -20,12 +20,18 @@ echo "Source files:      $SourceFiles"
 echo "Build directory:   $BuildDirectory"
 echo "Build filename:    $BuildFilename"
 
-if [[ ! -d $BuildDirectory ]]; then
+if [[ ! -d $BuildDirectory && ! $BuildDirectory == '' ]]; then
     mkdir -p --verbose $BuildDirectory;
 fi
 
-if [[ "$Arguments" == *"--clean"* || "$Arguments" == *"-c"* ]]; then
-    if [[ "$Arguments" == *"--no-questions"* || "$Arguments" == *"-y"* ]]; then
+if [[ "$Arguments" == *" --clean"* || "$Arguments" == *" -c"* ]]; then
+    if   [[ $BuildDirectory == '' ]]; then
+        echo "Error: refused to run --clean inside source directory, that would be a disaster."
+        exit 1
+    elif [[ $(readlink -f "$BuildDirectory") == $(pwd) ]]; then
+        echo "Error: refused to run --clean inside source directory, that would be a disaster."
+        exit 1
+    elif [[ "$Arguments" == *" --no-questions"* || "$Arguments" == *" -y"* ]]; then
         questions=""
     else
         questions="-i"
@@ -40,8 +46,9 @@ if [[ "$Arguments" == *"--clean"* || "$Arguments" == *"-c"* ]]; then
     fi
     echo ''
 fi
+exit 1
 
-if [[ "$Arguments" == *"--asm-output"* ]]; then 
+if [[ "$Arguments" == *" --asm-output"* ]]; then 
     AssemblerOutput="-O2 -S -fverbose-asm"
     BuildPath="$BuildPath.s"
 else
@@ -64,7 +71,7 @@ if [[ $1 == "--linux" ]] || [[ $1 == "-l" ]]; then
             -D _LINUX_BUILD_=
         )
     elif [[ $OSTYPE == "msys" || $OSTYPE == "cygwin" ]]; then
-        $(  C:/msys64/usr/bin/g++.exe $AssemblerOutput $CommonArguments $CommonLinuxArguments                                      \
+        $(  C:/msys64/usr/bin/g++.exe $AssemblerOutput $CommonArguments $CommonLinuxArguments                                   \
             $SourceFiles                                                                                                        \
             -o $BuildPath                                                                                                       \
             -D _LINUX_BUILD_
@@ -81,13 +88,13 @@ elif [[ $1 == "--windows" ]] || [[ $1 == "-w" ]]; then
     echo "Building $BuildFilename for Windows from $OSTYPE"
     if [[ $OSTYPE == "msys" || $OSTYPE == "cygwin" ]]; then
     #==========================================================G++ COMMAND==========================================================#
-        $(  C:/msys64/mingw64/bin/g++.exe $CommonArguments $CommonWindowsArguments                                                 \
+        $(  C:/msys64/mingw64/bin/g++.exe $AssemblerOutput $CommonArguments $CommonWindowsArguments                             \
             "$SourceFiles"                                                                                                      \
             -o "$BuildPath"                                                                                                     \
             -D _WINDOWS_BUILD_=
         )
     elif [[ $OSTYPE == "linux-gnu" ]]; then
-        $(  x86_64-w64-mingw32-g++ $CommonArguments $CommonWindowsArguments                                                     \
+        $(  x86_64-w64-mingw32-g++ $AssemblerOutput $CommonArguments $CommonWindowsArguments                                    \
             $SourceFiles                                                                                                        \
             -o $BuildPath                                                                                                       \
             -D _WINDOWS_BUILD_=
