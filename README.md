@@ -42,23 +42,23 @@ The file build.config is used to define custom build and post-build configuratio
 The build script will read everything inside quotes, if it is a valid option.
 Currently accepted options are:
 
-**CommonArguments**
+**CommonArguments**  
 Arguments passed to the compiler regardless of the target OS.
 
-**LinuxArguments**
+**LinuxArguments**  
 Arguments passed to the compiler when the target OS is Linux.
 
-**WindowsArguments**
+**WindowsArguments**  
 Arguments passed to the compiler when the target OS is Windows.
 
-**CommonLibraries**
+**CommonLibraries**  
 Libraries to be linked by the compiler regardless of the target OS. In the format -l*libraryname*
 
-**LinuxLibraries**
+**LinuxLibraries**  
 Libraries to be linked by the compiler if the target OS is Linux. In the format -l*libraryname*
 
-**WindowsLibraries**
+**WindowsLibraries**  
 Libraries to be linked by the compiler if the target OS is Windows. In the format -l*libraryname*
 
-**CopyToBuildFolder**
+**CopyToBuildFolder**  
 Setup a post-build task to copy files or folders to the build directory.
