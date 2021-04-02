@@ -1,7 +1,9 @@
 #!/bin/bash
-if ( $# < 3 ); then echo "Expected at least 3 arguments, received $#"; exit 1; fi
-if [[ $OSTYPE != "linux-gnu" && $OSTYPE != "msys" && $OSTYPE != "cygwin" ]]; then
-    echo "Error: Unsupported system $OSTYPE.
+export LANG=C
+if (( $# < 2 )); then echo "Expected at least 2 arguments, received $#"; exit 1; fi
+if [[ $OSTYPE=="linux-gnu" ]]; then CurrentSystem="linux";
+elif [[ $OSTYPE=="msys" || $OSTYPE=="cygwin" ]]; then CurrentSystem="windows";
+else echo "Error: Unsupported system $OSTYPE.
 You can try to set the OSTYPE environment variable to a supported system name.
 Supported systems are: 'linux-gnu' 'msys' 'cygwin'
 ";  exit -1
@@ -9,32 +11,37 @@ fi
 
 echo "Working directory: $(pwd)"
 
-# Setup this script's arguments #
-Arguments=" $@"
-Files=$(echo $Arguments | sed -e "s/-[a-zA-Z\-]* //g")
-SourceFiles=${Files% *}
-BuildPath=${Files##* }
-BuildFilename=${BuildPath##*/}
-BuildDirectory=${BuildPath%%$BuildFilename}
-
-ReturnFromBuildDirectory=$(echo $BuildDirectory | sed -e 's/[^\/]*\?\//..\//g')
-
-# Get common build settigs from build.config #
+# Get common build settings from build.config #
+SourceFiles=$(echo $(cat build.config) | grep -oP 'CommonSourceFiles=\"\K.*?(?=\")')
 CommonArguments=$(echo $(cat build.config) | grep -oP 'CommonArguments=\"\K.*?(?=\")')
 CommonLibraries=$(echo $(cat build.config) | grep -oP 'CommonLibraries=\"\K.*?(?=\")')
-
 CopyToBuildFolder=$(echo $(cat build.config) | grep -oP 'CopyToBuildFolder=\"\K.*?(?=\")')
-echo "Source files:      $SourceFiles"
-echo "Build directory:   $BuildDirectory"
-echo "Build filename:    $BuildFilename"
-echo "Common arguments:  \"$CommonArguments\""
-echo "Common libraries:  \"$CommonLibraries\""
 
-if [[ ! -d $BuildDirectory && ! $BuildDirectory == '' ]]; then
-    mkdir -p --verbose $BuildDirectory;
+# Get system specific build settings from build.config #
+if [[ $CurrentSystem == "linux" ]]; then
+    SourceFilesSys=$(echo $(cat build.config) | grep -oP 'SourceFilesLinux=\"\K.*?(?=\")')
+    ArgumentsSys=$(echo $(cat build.config) | grep -oP 'ArgumentsLinux=\"\K.*?(?=\")')
+    LibrariesSys=$(echo $(cat build.config) | grep -oP 'LibrariesLinux=\"\K.*?(?=\")')
+    BuildPath=$(echo $(cat build.config) | grep -oP 'BuildPathLinux=\"\K.*?(?=\")')
+elif [[ $CurrentSystem == "windows" ]]; then
+    SourceFilesSys=$(echo $(cat build.config) | grep -oP 'SourceFilesWindows=\"\K.*?(?=\")')
+    ArgumentsSys=$(echo $(cat build.config) | grep -oP 'ArgumentsWindows=\"\K.*?(?=\")')
+    LibrariesSys=$(echo $(cat build.config) | grep -oP 'LibrariesWindows=\"\K.*?(?=\")')
+    BuildPath=$(echo $(cat build.config) | grep -oP 'BuildPathWindows=\"\K.*?(?=\")')
+fi
+BuildDirectory=${BuildPath%/*}
+BuildFilename=${BuildPath##*/}
+ReturnFromBuildDirectory=$(echo $BuildDirectory | sed -re 's/[^\/].*\//..\//g' -re 's/\/.*[^\/]/\/../g')
+
+echo "Target build directory: $BuildDirectory"
+echo "Target filename: $BuildFilename"
+
+if [ ! -d $BuildDirectory ]; then
+    mkdir -p --verbose $BuildDirectory
 fi
 
-if [[ "$Arguments" == *" --clean"* || "$Arguments" == *" -c"* ]]; then
+# Clean task #
+if [[ $@ == *" --clean"* || $@ == *" -c"* ]]; then
     # Prevent accidentally cleaning source directory #
     if   [[ $BuildDirectory == '' ]]; then
         echo "Error: refused to run --clean inside source directory."
@@ -42,8 +49,8 @@ if [[ "$Arguments" == *" --clean"* || "$Arguments" == *" -c"* ]]; then
     elif [[ $(readlink -f "$BuildDirectory") == $(pwd) ]]; then
         echo "Error: refused to run --clean inside source directory."
         exit 1
-    # Define if confirmation is required to delete #
-    elif [[ "$Arguments" == *" --no-questions"* || "$Arguments" == *" -y"* ]]; then
+    # Define if confirmation is required to clear build directory #
+    elif [[ "$@" == *" --no-questions"* || "$@" == *" -y"* ]]; then
         Questions=""
     else
         Questions="-i"
@@ -56,12 +63,12 @@ if [[ "$Arguments" == *" --clean"* || "$Arguments" == *" -c"* ]]; then
         rm -r --verbose $Questions $FilesToDelete
         echo "Returning $ReturnFromBuildDirectory"
         cd $ReturnFromBuildDirectory
+        echo "Working directory: $(pwd)"
     fi
-    echo ''
 fi
 
 # Check if compiler should output ASM #
-if [[ "$Arguments" == *" --asm-output"* ]]; then 
+if [[ $@ == *" --asm-output"* ]]; then 
     AssemblerOutput="-O2 -S -fverbose-asm"
     BuildPath="$BuildPath.s"
 else
@@ -73,29 +80,12 @@ fi
 #=============#
 if [[ $1 == "--linux" || $1 == "-L" ]]; then
     echo "Building $BuildFilename for Linux from $OSTYPE"
-    # Get Linux specific build settigs from build.config #
-    LinuxArguments=$(echo $(cat build.config) | grep -oP 'LinuxArguments=\"\K.*?(?=\")')
-    LinuxLibraries=$(echo $(cat build.config) | grep -oP 'LinuxLibraries=\"\K.*?(?=\")')
-    echo "Linux arguments:   \"$LinuxArguments\""
-    echo "Linux libraries:   \"$LinuxLibraries\""
-    #==========================================================G++ COMMAND==========================================================#
+    Sources="$SourceFilesSys $SourceFiles"
+    BuildArgs="$AssemblerOutput $CommonArguments $LinuxArguments $Sources -o $BuildPath $CommonLibraries $OSlibraries -D _LINUX_BUILD_="
     if [[ $OSTYPE == "linux-gnu" ]]; then
-        $(  g++ $AssemblerOutput $CommonArguments $LinuxArguments                                                               \
-            $SourceFiles                                                                                                        \
-            -o $BuildPath                                                                                                       \
-            $CommonLibraries                                                                                                    \
-            $LinuxLibraries                                                                                                     \
-            -D _LINUX_BUILD_=
-        )
+        $(g++ $BuildArgs)
     elif [[ $OSTYPE == "msys" || $OSTYPE == "cygwin" ]]; then
-        $(  C:/msys64/usr/bin/g++.exe $AssemblerOutput $CommonArguments $LinuxArguments                                         \
-            $SourceFiles                                                                                                        \
-            -o $BuildPath                                                                                                       \
-            $CommonLibraries                                                                                                    \
-            $LinuxLibraries                                                                                                     \
-            -D _LINUX_BUILD_=
-        )
-    #===============================================================================================================================#
+        $(C:/msys64/usr/bin/g++.exe $BuildArgs)
     fi
     exitCode=$?
     if [ -f "$BuildPath.exe" ]; then 
@@ -107,29 +97,12 @@ if [[ $1 == "--linux" || $1 == "-L" ]]; then
 #===============#
 elif [[ $1 == "--windows" ]] || [[ $1 == "-W" ]]; then
     echo "Building $BuildFilename for Windows from $OSTYPE"
-    # Get windows specific build settigs from build.config #
-    WindowsArguments=$(echo $(cat build.config) | grep -oP "WindowsArguments=\"\K.*?(?=\")")
-    WindowsLibraries=$(echo $(cat build.config) | grep -oP "WindowsLibraries=\"\K.*?(?=\")")
-    echo "Windows arguments: \"$WindowsArguments\""
-    echo "Windows libraries: \"$WindowsLibraries\""
-    if [[ $OSTYPE == "msys" || $OSTYPE == "cygwin" ]]; then
-    #==========================================================G++ COMMAND==========================================================#
-        $(  C:/msys64/mingw64/bin/g++.exe $AssemblerOutput $CommonArguments $WindowsArguments                                   \
-            $SourceFiles                                                                                                        \
-            -o $BuildPath                                                                                                       \
-            $CommonLibraries                                                                                                    \
-            $WindowsLibraries                                                                                                   \
-            -D _WINDOWS_BUILD_=
-        )
-    elif [[ $OSTYPE == "linux-gnu" ]]; then
-        $(  x86_64-w64-mingw32-g++ $AssemblerOutput $CommonArguments $WindowsArguments                                          \
-            $SourceFiles                                                                                                        \
-            -o $BuildPath                                                                                                       \
-            $CommonLibraries                                                                                                    \
-            $WindowsLibraries                                                                                                   \
-            -D _WINDOWS_BUILD_=
-        )
-    #===============================================================================================================================#
+    Sources="$SourceFilesSys $SourceFiles"
+    BuildArgs="$AssemblerOutput $CommonArguments $WindowsArguments $Sources -o $BuildPath $CommonLibraries $OSlibraries -D _LINUX_BUILD_="
+    if [[ $CurrentSystem == "windows" ]]; then
+        $(C:/msys64/mingw64/bin/g++.exe $BuildArgs)
+    elif [[ $CurrentSystem == "linux" ]]; then
+        $(x86_64-w64-mingw32-g++ $BuildArgs)
     fi
     exitCode=$?
 else

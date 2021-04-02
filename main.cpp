@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <fstream>
 
 // Get target system from compiler argument -D _<OS>_BUILD_
@@ -21,9 +20,10 @@
 using namespace std;
 
 int main(int argc, char** argv=(char**)" ")
-{       
+{
     // Read version file
-    string ProgramPath = argv[0];
+    string ProgramPath;
+    if (argc) { ProgramPath = argv[0]; }
     ifstream version(ProgramPath + ".version", ios::in);
     if (version.is_open()) {
         while(char c = version.get()) {

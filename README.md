@@ -25,11 +25,6 @@ A simple cross-platform build environment, with a program that outputs its own b
 ##### Generate Assembler file instead of a binary
 - --asm-output
 
-##### Last parameters (required): source files and target path, including filename
-###### Example:
-> ./build.sh --linux   main.cpp foo.cpp bar.cpp build/linux/main  
-> ./build.sh --windows main.cpp foo.cpp bar.cpp build/windows/main.exe  
-
 A \*.version file named after the generated object will be created in the target directory, containing build details  
 (e.g.: *main.version* or *main.exe.version*).
 
@@ -40,22 +35,37 @@ The file **build.config** is used to define custom build and post-build configur
 The build script will read everything inside quotes, if it is a valid option.
 Currently accepted options are:
 
+**CommonSourceFiles**
+Source files to be compiled regardless of the target OS.
+
+**SourceFilesLinux**
+Source files to be compiled when building for Linux.
+
+**SourceFilesWindows**
+Source files to be compiled when building for Windows.
+
+**BuildPathLinux**
+Path of the generated file for Linux, including the filename.
+
+**BuildPathWindows**
+Path of the generated file for Windows, including the filename.
+
 **CommonArguments**  
 Arguments passed to G++ regardless of the target OS.
 
-**LinuxArguments**  
+**ArgumentsLinux**  
 Arguments passed to G++ when building for Linux.
 
-**WindowsArguments**  
+**ArgumentsWindows**  
 Arguments passed to G++ when building for Windows.
 
 **CommonLibraries**  
 Libraries to be linked by G++ regardless of the target OS. In the format -l*library*
 
-**LinuxLibraries**  
+**LibrariesLinux**  
 Libraries to be linked by G++ when building for Linux. In the format -l*library*
 
-**WindowsLibraries**  
+**LibrariesWindows**  
 Libraries to be linked by G++ when building for Windows. In the format -l*library*
 
 **CopyToBuildFolder**  

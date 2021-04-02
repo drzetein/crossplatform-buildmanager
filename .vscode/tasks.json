@@ -16,7 +16,7 @@
             "args": [
                 "--login",
                 "-c",
-                "./build.sh --linux --clean --no-questions main.cpp build/linux/main"
+                "./build.sh --linux --clean --no-questions"
             ],
             "problemMatcher": [
                 "$tsc"
@@ -44,7 +44,7 @@
             "args": [
                 "--login",
                 "-c",
-                "./build.sh --linux --clean --no-questions --asm-output main.cpp build/linux-asm/main"
+                "./build.sh --linux --clean --no-questions --asm-output build/linux-asm/main"
             ],
             "problemMatcher": [
                 "$tsc"
@@ -76,7 +76,7 @@
             "args": [
                 "--login",
                 "-c",
-                "./build.sh --windows --clean --no-questions main.cpp build/windows/main.exe"
+                "./build.sh --windows --clean --no-questions build/windows/main.exe"
             ],
             "problemMatcher": [
                 "$tsc"
@@ -108,7 +108,7 @@
             "args": [
                 "--login",
                 "-c",
-                "./build.sh --windows --clean --no-questions --asm-output main.cpp build/windows-asm/main.exe"
+                "./build.sh --windows --clean --no-questions --asm-output build/windows-asm/main.exe"
             ],
             "problemMatcher": [
                 "$tsc"
