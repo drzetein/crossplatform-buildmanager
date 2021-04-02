@@ -8,24 +8,24 @@ A simple cross-platform build environment, with a program that outputs its own b
 ###### http://mingw-w64.org/doku.php/download
 
 ## Currently accepted build.sh arguments
-**1st parameter (required):  Target operational system**
+##### First parameter (required):  Target operational system
 - --linux  
   -L
 - --windows  
   -W
 
-**Delete all previous files in build directory**
+###### Clean build directory before compiling
 - --clean  
   -c
 
-**Don't ask for confirmation when deleting files with --clean**
+###### Don't ask for confirmation when cleaning
 - --no-questions  
   -y
 
-**Generate Assembler file instead of a binary**
+###### Generate Assembler file instead of a binary
 - --asm-output
 
-**Last parameters (required): source files and target path, including filename**
+##### Last parameters (required): source files and target path, including filename
 ###### Example:
 > ./build.sh --linux   main.cpp foo.cpp bar.cpp build/linux/main  
 > ./build.sh --windows main.cpp foo.cpp bar.cpp build/windows/main.exe  
