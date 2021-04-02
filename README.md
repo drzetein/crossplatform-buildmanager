@@ -52,13 +52,13 @@ Arguments passed to the compiler when the target OS is Linux.
 Arguments passed to the compiler when the target OS is Windows.
 
 **CommonLibraries**  
-Libraries to be linked by the compiler regardless of the target OS. In the format -l*libraryname*
+Libraries to be linked by the compiler regardless of the target OS. In the format -l*library*
 
 **LinuxLibraries**  
-Libraries to be linked by the compiler if the target OS is Linux. In the format -l*libraryname*
+Libraries to be linked by the compiler if the target OS is Linux. In the format -l*library*
 
 **WindowsLibraries**  
-Libraries to be linked by the compiler if the target OS is Windows. In the format -l*libraryname*
+Libraries to be linked by the compiler if the target OS is Windows. In the format -l*library*
 
 **CopyToBuildFolder**  
 Setup a post-build task to copy files or folders to the build directory.
