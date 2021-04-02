@@ -43,22 +43,22 @@ The build script will read everything inside quotes, if it is a valid option.
 Currently accepted options are:
 
 **CommonArguments**  
-Arguments passed to the compiler regardless of the target OS.
+Arguments passed to G++ regardless of the target OS.
 
 **LinuxArguments**  
-Arguments passed to the compiler when the target OS is Linux.
+Arguments passed to G++ when building for Linux.
 
 **WindowsArguments**  
-Arguments passed to the compiler when the target OS is Windows.
+Arguments passed to G++ when building for Windows.
 
 **CommonLibraries**  
-Libraries to be linked by the compiler regardless of the target OS. In the format -l*library*
+Libraries to be linked by G++ regardless of the target OS. In the format -l*library*
 
 **LinuxLibraries**  
-Libraries to be linked by the compiler if the target OS is Linux. In the format -l*library*
+Libraries to be linked by G++ when building for Linux. In the format -l*library*
 
 **WindowsLibraries**  
-Libraries to be linked by the compiler if the target OS is Windows. In the format -l*library*
+Libraries to be linked by G++ when building for Windows. In the format -l*library*
 
 **CopyToBuildFolder**  
-Setup a post-build task to copy files or folders to the build directory.
+Files or folders to be copied to the build directory if the build was successful.
