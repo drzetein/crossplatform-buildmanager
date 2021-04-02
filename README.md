@@ -14,15 +14,15 @@ A simple cross-platform build environment, with a program that outputs its own b
 - --windows  
   -W
 
-###### Clean build directory before compiling
+##### Clean build directory before compiling
 - --clean  
   -c
 
-###### Don't ask for confirmation when cleaning
+##### Don't ask for confirmation when cleaning
 - --no-questions  
   -y
 
-###### Generate Assembler file instead of a binary
+##### Generate Assembler file instead of a binary
 - --asm-output
 
 ##### Last parameters (required): source files and target path, including filename
@@ -32,8 +32,6 @@ A simple cross-platform build environment, with a program that outputs its own b
 
 A \*.version file named after the generated object will be created in the target directory, containing build details  
 (e.g.: *main.version* or *main.exe.version*).
-
-#####
 
 ## Settings ##
 The file **build.config** is used to define custom build and post-build configurations and tasks. The options are given in this format:
