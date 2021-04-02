@@ -32,3 +32,33 @@ A simple cross-platform build environment, with a program that outputs its own b
 
 A \*.version file named after the generated object will be created in the target directory, containing build details  
 (e.g.: *main.version* or *main.exe.version*).
+
+#####
+
+## Settings ##
+The file build.config is used to define custom build and post-build configurations and tasks. The options are given in this format:
+> OptionName="some stuff"
+
+The build script will read everything inside quotes, if it is a valid option.
+Currently accepted options are:
+
+**CommonArguments**
+Arguments passed to the compiler regardless of the target OS.
+
+**LinuxArguments**
+Arguments passed to the compiler when the target OS is Linux.
+
+**WindowsArguments**
+Arguments passed to the compiler when the target OS is Windows.
+
+**CommonLibraries**
+Libraries to be linked by the compiler regardless of the target OS. In the format -l*libraryname*
+
+**LinuxLibraries**
+Libraries to be linked by the compiler if the target OS is Linux. In the format -l*libraryname*
+
+**WindowsLibraries**
+Libraries to be linked by the compiler if the target OS is Windows. In the format -l*libraryname*
+
+**CopyToBuildFolder**
+Setup a post-build task to copy files or folders to the build directory.
