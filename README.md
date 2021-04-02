@@ -10,9 +10,9 @@ A simple cross-platform build environment, with a program that outputs its own b
 ## Currently accepted build.sh arguments
 **1st parameter (required):  Target operational system**
 - --linux  
-  -l
+  -L
 - --windows  
-  -w
+  -W
 
 **Delete all previous files in build directory**
 - --clean  
