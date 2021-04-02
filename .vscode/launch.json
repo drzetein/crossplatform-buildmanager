@@ -7,14 +7,16 @@
         {
             "preLaunchTask": "Linux build",
             "name": "Launch Linux build",
-            "type": "gdb",
+            "type": "cppdbg",
+            "cwd":  ".",
             "request": "launch",
             "program": "${workspaceFolder}/build/linux/main"
         },
         {
             "preLaunchTask": "Windows build",
             "name": "Launch Windows build",
-            "type": "gdb",
+            "type": "cppdbg",
+            "cwd":  ".",
             "request": "launch",
             "program": "${workspaceFolder}/build/windows/main.exe"
         }

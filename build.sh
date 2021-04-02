@@ -17,13 +17,13 @@ BuildPath=${Files##* }
 BuildFilename=${BuildPath##*/}
 BuildDirectory=${BuildPath%%$BuildFilename}
 
-ReturnFromBuildDirectory=$(echo $BuildDirectory | sed -e "s/[^\/]*\?\//..\//g" )
+ReturnFromBuildDirectory=$(echo $BuildDirectory | sed -e 's/[^\/]*\?\//..\//g')
 
 # Get common build settigs from build.config #
-CopyToBuildFolder=$(echo $(cat build.config) | grep -oP "CopyToBuildFolder=\"\K.*?(?=\")")
-CommonArguments=$(echo $(cat build.config)   | grep -oP "CommonArguments=\"\K.*?(?=\")")
-CommonLibraries=$(echo $(cat build.config)   | grep -oP "CommonLibraries=\"\K.*?(?=\")")
+CommonArguments=$(echo $(cat build.config) | grep -oP 'CommonArguments=\"\K.*?(?=\")')
+CommonLibraries=$(echo $(cat build.config) | grep -oP 'CommonLibraries=\"\K.*?(?=\")')
 
+CopyToBuildFolder=$(echo $(cat build.config) | grep -oP 'CopyToBuildFolder=\"\K.*?(?=\")')
 echo "Source files:      $SourceFiles"
 echo "Build directory:   $BuildDirectory"
 echo "Build filename:    $BuildFilename"
@@ -35,14 +35,14 @@ if [[ ! -d $BuildDirectory && ! $BuildDirectory == '' ]]; then
 fi
 
 if [[ "$Arguments" == *" --clean"* || "$Arguments" == *" -c"* ]]; then
-    # Prevent accidentally cleaning in source directory #
+    # Prevent accidentally cleaning source directory #
     if   [[ $BuildDirectory == '' ]]; then
         echo "Error: refused to run --clean inside source directory."
         exit 1
     elif [[ $(readlink -f "$BuildDirectory") == $(pwd) ]]; then
         echo "Error: refused to run --clean inside source directory."
         exit 1
-    # Should any questions be asked before deleting? #
+    # Define if confirmation is required to delete #
     elif [[ "$Arguments" == *" --no-questions"* || "$Arguments" == *" -y"* ]]; then
         Questions=""
     else
@@ -69,7 +69,7 @@ else
 fi
 
 #=============#
-# LINUX BUILD #
+# Linux Build #
 #=============#
 if [[ $1 == "--linux" || $1 == "-L" ]]; then
     echo "Building $BuildFilename for Linux from $OSTYPE"
