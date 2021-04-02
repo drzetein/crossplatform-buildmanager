@@ -36,7 +36,7 @@ A \*.version file named after the generated object will be created in the target
 #####
 
 ## Settings ##
-The file build.config is used to define custom build and post-build configurations and tasks. The options are given in this format:
+The file **build.config** is used to define custom build and post-build configurations and tasks. The options are given in this format:
 > OptionName="some stuff"
 
 The build script will read everything inside quotes, if it is a valid option.
