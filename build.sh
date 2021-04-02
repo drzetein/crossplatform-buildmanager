@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ $# < 3 ]]; then echo "Expected at least 3 arguments"; exit 1; fi
+if ( $# < 3 ); then echo "Expected at least 3 arguments, received $#"; exit 1; fi
 if [[ $OSTYPE != "linux-gnu" && $OSTYPE != "msys" && $OSTYPE != "cygwin" ]]; then
     echo "Error: Unsupported system $OSTYPE.
 You can try to set the OSTYPE environment variable to a supported system name.
