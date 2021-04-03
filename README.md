@@ -35,19 +35,19 @@ The file **build.config** is used to define custom build and post-build configur
 The build script will read everything inside quotes, if it is a valid option.
 Currently accepted options are:
 
-**CommonSourceFiles**
+**CommonSourceFiles**  
 Source files to be compiled regardless of the target OS.
 
-**SourceFilesLinux**
+**SourceFilesLinux**  
 Source files to be compiled when building for Linux.
 
-**SourceFilesWindows**
+**SourceFilesWindows**  
 Source files to be compiled when building for Windows.
 
-**BuildPathLinux**
+**BuildPathLinux**  
 Path of the generated file for Linux, including the filename.
 
-**BuildPathWindows**
+**BuildPathWindows**  
 Path of the generated file for Windows, including the filename.
 
 **CommonArguments**  
