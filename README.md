@@ -25,10 +25,7 @@ A simple cross-platform build environment, with a program that outputs its own b
 ##### Generate Assembler file instead of a binary
 - --asm-output
 
-A \*.version file named after the generated object will be created in the target directory, containing build details  
-(e.g.: *main.version* or *main.exe.version*).
-
-## Settings ##
+## Settings
 The file **build.config** is used to define custom build and post-build configurations and tasks. The options are given in this format:
 > OptionName="some stuff"
 
@@ -70,3 +67,7 @@ Libraries to be linked by G++ when building for Windows. In the format -l*librar
 
 **CopyToBuildFolder**  
 Files or folders to be copied to the build directory if the build was successful.
+
+## Post-Build
+A \*.version file named after the generated object will be created in the target directory, containing build details  
+(e.g.: *main.version* or *main.exe.version*).
