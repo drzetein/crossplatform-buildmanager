@@ -1,6 +1,5 @@
 #!/bin/bash
-export LANG=C
-if (( $# < 2 )); then echo "Expected at least 2 arguments, received $#"; exit 1; fi
+if (( $# < 1 )); then echo "Expected at least 1 argument, received $#"; exit 1; fi
 if [[ $OSTYPE=="linux-gnu" ]]; then CurrentSystem="linux";
 elif [[ $OSTYPE=="msys" || $OSTYPE=="cygwin" ]]; then CurrentSystem="windows";
 else echo "Error: Unsupported system $OSTYPE.
@@ -8,27 +7,27 @@ You can try to set the OSTYPE environment variable to a supported system name.
 Supported systems are: 'linux-gnu' 'msys' 'cygwin'
 ";  exit -1
 fi
-
 echo "Working directory: $(pwd)"
 
 # Get common build settings from build.config #
 SourceFiles=$(echo $(cat build.config) | grep -oP 'CommonSourceFiles=\"\K.*?(?=\")')
 CommonArguments=$(echo $(cat build.config) | grep -oP 'CommonArguments=\"\K.*?(?=\")')
 CommonLibraries=$(echo $(cat build.config) | grep -oP 'CommonLibraries=\"\K.*?(?=\")')
-CopyToBuildFolder=$(echo $(cat build.config) | grep -oP 'CopyToBuildFolder=\"\K.*?(?=\")')
+CopyToBuildDir=$(echo $(cat build.config) | grep -oP 'CopyToBuildDir=\"\K.*?(?=\")')
 
 # Get system specific build settings from build.config #
-if [[ $CurrentSystem == "linux" ]]; then
+if [[ $1 == "--linux" || $1 == "-L" ]]; then
     SourceFilesSys=$(echo $(cat build.config) | grep -oP 'SourceFilesLinux=\"\K.*?(?=\")')
     ArgumentsSys=$(echo $(cat build.config) | grep -oP 'ArgumentsLinux=\"\K.*?(?=\")')
     LibrariesSys=$(echo $(cat build.config) | grep -oP 'LibrariesLinux=\"\K.*?(?=\")')
     BuildPath=$(echo $(cat build.config) | grep -oP 'BuildPathLinux=\"\K.*?(?=\")')
-elif [[ $CurrentSystem == "windows" ]]; then
+elif [[ $1 == "--windows" || $1 == "-W" ]]; then
     SourceFilesSys=$(echo $(cat build.config) | grep -oP 'SourceFilesWindows=\"\K.*?(?=\")')
     ArgumentsSys=$(echo $(cat build.config) | grep -oP 'ArgumentsWindows=\"\K.*?(?=\")')
     LibrariesSys=$(echo $(cat build.config) | grep -oP 'LibrariesWindows=\"\K.*?(?=\")')
     BuildPath=$(echo $(cat build.config) | grep -oP 'BuildPathWindows=\"\K.*?(?=\")')
 fi
+
 BuildDirectory=${BuildPath%/*}
 BuildFilename=${BuildPath##*/}
 ReturnFromBuildDirectory=$(echo $BuildDirectory | sed -re 's/[^\/].*\//..\//g' -re 's/\/.*[^\/]/\/../g')
@@ -67,7 +66,7 @@ if [[ $@ == *" --clean"* || $@ == *" -c"* ]]; then
     fi
 fi
 
-# Check if compiler should output ASM #
+# Assembler output option #
 if [[ $@ == *" --asm-output"* ]]; then 
     AssemblerOutput="-O2 -S -fverbose-asm"
     BuildPath="$BuildPath.s"
@@ -81,7 +80,7 @@ fi
 if [[ $1 == "--linux" || $1 == "-L" ]]; then
     echo "Building $BuildFilename for Linux from $OSTYPE"
     Sources="$SourceFilesSys $SourceFiles"
-    BuildArgs="$AssemblerOutput $CommonArguments $LinuxArguments $Sources -o $BuildPath $CommonLibraries $OSlibraries -D _LINUX_BUILD_="
+    BuildArgs="$AssemblerOutput $CommonArguments $LinuxArguments $Sources -o $BuildPath $CommonLibraries $LibrariesSys -D _LINUX_BUILD_="
     if [[ $OSTYPE == "linux-gnu" ]]; then
         $(g++ $BuildArgs)
     elif [[ $OSTYPE == "msys" || $OSTYPE == "cygwin" ]]; then
@@ -98,25 +97,30 @@ if [[ $1 == "--linux" || $1 == "-L" ]]; then
 elif [[ $1 == "--windows" ]] || [[ $1 == "-W" ]]; then
     echo "Building $BuildFilename for Windows from $OSTYPE"
     Sources="$SourceFilesSys $SourceFiles"
-    BuildArgs="$AssemblerOutput $CommonArguments $WindowsArguments $Sources -o $BuildPath $CommonLibraries $OSlibraries -D _LINUX_BUILD_="
+    BuildArgs="$AssemblerOutput $CommonArguments $WindowsArguments $Sources -o $BuildPath $CommonLibraries $LibrariesSys -D _LINUX_BUILD_="
     if [[ $CurrentSystem == "windows" ]]; then
         $(C:/msys64/mingw64/bin/g++.exe $BuildArgs)
     elif [[ $CurrentSystem == "linux" ]]; then
         $(x86_64-w64-mingw32-g++ $BuildArgs)
     fi
     exitCode=$?
+
+# Return an error for invalid or unspecified target OS #
 else
-    echo "Error: Unknown target OS option: '${1//-/}'
+    echo "Error: Unknown target OS option '${1//-/}'
 Please specify either --linux (-L) or --windows (-W) as the first argument."
     exit 1
 fi
 
+#==================#
 # Post-build tasks #
+#==================#
 if [[ $exitCode != 0 ]]; then
     echo "G++ exit code: $exitCode"
     exit $exitCode
 else
-    if [[ $CopyToBuildFolder != '' ]]; then for file in $CopyToBuildFolder; do cp -r $CopyToBuildFolder $BuildDirectory; done; fi
+    if [[ $RemoveFromBuildDir != '' ]]; then for file in $CopyToBuildDir; do cp -r $RemoveFromBuildDir $BuildDirectory; done; fi
+    if [[ $CopyToBuildDir != '' ]]; then for file in $CopyToBuildDir; do cp -r $CopyToBuildDir $BuildDirectory; done; fi
     echo "$BuildFilename: built from $OSTYPE with G++ on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $BuildPath.version
     echo "$(cat $BuildPath.version)"
     exit 0

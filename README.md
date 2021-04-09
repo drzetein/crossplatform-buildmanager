@@ -65,7 +65,10 @@ Libraries to be linked by G++ when building for Linux. In the format -l*library*
 **LibrariesWindows**  
 Libraries to be linked by G++ when building for Windows. In the format -l*library*
 
-**CopyToBuildFolder**  
+**RemoveFromBuildDir**  
+Files or folders to be removed from the build directory if the build was successful.
+
+**CopyToBuildDir**  
 Files or folders to be copied to the build directory if the build was successful.
 
 ## Post-Build
