@@ -23,13 +23,10 @@
 
 using namespace std;
 
-#pragma GCC diagnostic pop
-#pragma GCC diagnostic ignored "-Wunused-parameter"
 int main(int argc, char** argv)
 {   // Read version file
-    #pragma GCC diagnostic push
     string ProgramPath;
-    ProgramPath = argv[0];
+    if(argc) ProgramPath = argv[0];
     ifstream version(ProgramPath + ".version", ios::in);
     if (version.is_open()) {
         while(char c = version.get())
