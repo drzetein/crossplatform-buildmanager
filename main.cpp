@@ -32,5 +32,5 @@ int main(int argc, char** argv)
         while(char c = version.get())
             if (c!=-1) cout << c;
     }
-    return 1;
+    return 0;
 }

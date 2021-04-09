@@ -121,6 +121,7 @@ if [[ $exitCode != 0 ]]; then
 else
     if [[ $RemoveFromBuildDir != '' ]]; then for file in $CopyToBuildDir; do cp -r $RemoveFromBuildDir $BuildDirectory; done; fi
     if [[ $CopyToBuildDir != '' ]]; then for file in $CopyToBuildDir; do cp -r $CopyToBuildDir $BuildDirectory; done; fi
+    if [ -f $BuildPath.version ]; then sed -e 's/.*//g' -i $BuildPath.version; fi
     echo "$BuildFilename: built from $OSTYPE with G++ on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $BuildPath.version
     echo "$(cat $BuildPath.version)"
     exit 0
