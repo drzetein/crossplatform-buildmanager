@@ -98,7 +98,7 @@ if [[ $1 == "--linux" || $1 == "-L" ]]; then
 elif [[ $1 == "--windows" ]] || [[ $1 == "-W" ]]; then
     echo "Building $BuildFilename for Windows from $OSTYPE"
     Sources="$SourceFilesSys $SourceFiles"
-    BuildArgs="$AssemblerOutput $CommonArguments $WindowsArguments $Sources -o $BuildPath $CommonLibraries $LibrariesSys -D _LINUX_BUILD_="
+    BuildArgs="$AssemblerOutput $CommonArguments $WindowsArguments $Sources -o $BuildPath $CommonLibraries $LibrariesSys -D _WINDOWS_BUILD_="
     if [[ $CurrentSystem == "windows" ]]; then
         $(C:/msys64/mingw64/bin/g++.exe $BuildArgs)
     elif [[ $CurrentSystem == "linux" ]]; then
