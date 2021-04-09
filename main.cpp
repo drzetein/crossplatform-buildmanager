@@ -23,15 +23,17 @@
 
 using namespace std;
 
-int main(int argc, char** argv=(char**)" ")
+#pragma GCC diagnostic pop
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+int main(int argc, char** argv)
 {   // Read version file
+    #pragma GCC diagnostic push
     string ProgramPath;
-    if (argc) ProgramPath = argv[0];
+    ProgramPath = argv[0];
     ifstream version(ProgramPath + ".version", ios::in);
     if (version.is_open()) {
         while(char c = version.get())
             if (c!=-1) cout << c;
-        version.close();
-        return 0;
     }
+    return 1;
 }
