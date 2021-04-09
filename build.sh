@@ -13,6 +13,7 @@ echo "Working directory: $(pwd)"
 SourceFiles=$(echo $(cat build.config) | grep -oP 'CommonSourceFiles=\"\K.*?(?=\")')
 CommonArguments=$(echo $(cat build.config) | grep -oP 'CommonArguments=\"\K.*?(?=\")')
 CommonLibraries=$(echo $(cat build.config) | grep -oP 'CommonLibraries=\"\K.*?(?=\")')
+RemoveFromBuildDir=$(echo $(cat build.config) | grep -oP 'RemoveFromBuildDir=\"\K.*?(?=\")')
 CopyToBuildDir=$(echo $(cat build.config) | grep -oP 'CopyToBuildDir=\"\K.*?(?=\")')
 
 # Get system specific build settings from build.config #
@@ -119,8 +120,8 @@ if [[ $exitCode != 0 ]]; then
     echo "G++ exit code: $exitCode"
     exit $exitCode
 else
-    if [[ $RemoveFromBuildDir != '' ]]; then for file in $CopyToBuildDir; do cp -r $RemoveFromBuildDir $BuildDirectory; done; fi
-    if [[ $CopyToBuildDir != '' ]]; then for file in $CopyToBuildDir; do cp -r $CopyToBuildDir $BuildDirectory; done; fi
+    if [[ $RemoveFromBuildDir != '' ]]; then for file in $RemoveFromBuildDir; do rm -v -r $RemoveFromBuildDir $BuildDirectory; done; fi
+    if [[ $CopyToBuildDir != '' ]]; then for file in $CopyToBuildDir; do cp -v -r $CopyToBuildDir $BuildDirectory; done; fi
     if [ -f $BuildPath.version ]; then sed -e 's/.*//g' -i $BuildPath.version; fi
     echo "$BuildFilename: built from $OSTYPE with G++ on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $BuildPath.version
     echo "$(cat $BuildPath.version)"
