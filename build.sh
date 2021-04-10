@@ -1,5 +1,5 @@
 #!/bin/bash
-if (( $# < 1 )); then echo "Expected at least 1 argument, received $#"; exit 1; fi
+if (( $# < 1 )); then echo "Expected at least 1 argument"; exit 1; fi
 if [[ $OSTYPE=="linux-gnu" ]]; then CurrentSystem="linux";
 elif [[ $OSTYPE=="msys" || $OSTYPE=="cygwin" ]]; then CurrentSystem="windows";
 else echo "Error: Unsupported system $OSTYPE.
@@ -121,9 +121,21 @@ if [[ $exitCode != 0 ]]; then
     echo "G++ exit code: $exitCode"
     exit $exitCode
 else
-    if [[ $RemoveFromBuildDir != '' ]]; then for file in $RemoveFromBuildDir; do rm -v -r $file $BuildDirectory; done; fi
-    if [[ $CopyToBuildDir != '' ]]; then for file in $CopyToBuildDir; do cp -v -r $file $BuildDirectory; done; fi
-    if [ -f $BuildPath.version ]; then sed -e 's/.*//g' -i $BuildPath.version; fi
+    if [[ $RemoveFromBuildDir =~ [:printable:] ]]; then
+        for file in $RemoveFromBuildDir; do
+            if [ -f $BuildDirectory/$file ] || [ -d $BuildDirectory/$file ]; then
+                rm -v -r $BuildDirectory/$file;
+            fi
+        done;
+    fi
+    if [[ $CopyToBuildDir =~ [:printable:] ]]; then
+        for file in $CopyToBuildDir; do
+            if [ -f $file ] || [ -d $file ]; then
+                cp -v -r $file $BuildDirectory;
+            fi
+        done;
+    fi
+    if [ -f $BuildPath.version ]; then rm -v $BuildPath.version; fi
     echo "$BuildFilename: built from $OSTYPE with G++ on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $BuildPath.version
     echo "$(cat $BuildPath.version)"
     exit 0
