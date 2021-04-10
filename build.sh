@@ -40,9 +40,7 @@ if [ ! -d $BuildDirectory ]; then
     mkdir -p --verbose $BuildDirectory
 fi
 
-#============#
 # Clean task #
-#============#
 if [[ $@ == *" --clean"* || $@ == *" -c"* ]]; then
     # Prevent accidentally cleaning source directory #
     if   [[ $BuildDirectory == '' ]]; then
