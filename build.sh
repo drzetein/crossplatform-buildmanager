@@ -7,7 +7,8 @@ You can try to set the OSTYPE environment variable to a supported system name.
 Supported systems are: 'linux-gnu' 'msys' 'cygwin'
 ";  exit -1
 fi
-echo "Working directory: $(pwd)"
+Source=$(pwd)
+echo "Working directory: $Source"
 
 # Get common build settings from build.config #
 SourceFiles=$(echo $(cat build.config) | grep -oP 'CommonSourceFiles=\"\K.*?(?=\")')
@@ -31,7 +32,6 @@ fi
 
 BuildDirectory=${BuildPath%/*}
 BuildFilename=${BuildPath##*/}
-ReturnFromBuildDirectory=$(echo $BuildDirectory | sed -re 's/[^\/].*\//..\//g' -re 's/\/.*[^\/]/\/../g')
 
 echo "Target build directory: $BuildDirectory"
 echo "Target filename: $BuildFilename"
@@ -40,7 +40,9 @@ if [ ! -d $BuildDirectory ]; then
     mkdir -p --verbose $BuildDirectory
 fi
 
+#============#
 # Clean task #
+#============#
 if [[ $@ == *" --clean"* || $@ == *" -c"* ]]; then
     # Prevent accidentally cleaning source directory #
     if   [[ $BuildDirectory == '' ]]; then
@@ -61,9 +63,8 @@ if [[ $@ == *" --clean"* || $@ == *" -c"* ]]; then
         cd $BuildDirectory
         echo "Working directory: $(pwd)"
         rm -r --verbose $Questions $FilesToDelete
-        echo "Returning $ReturnFromBuildDirectory"
-        cd $ReturnFromBuildDirectory
-        echo "Working directory: $(pwd)"
+        echo "Returning to $Source"
+        cd $Source
     fi
 fi
 
@@ -120,8 +121,8 @@ if [[ $exitCode != 0 ]]; then
     echo "G++ exit code: $exitCode"
     exit $exitCode
 else
-    if [[ $RemoveFromBuildDir != '' ]]; then for file in $RemoveFromBuildDir; do rm -v -r $RemoveFromBuildDir $BuildDirectory; done; fi
-    if [[ $CopyToBuildDir != '' ]]; then for file in $CopyToBuildDir; do cp -v -r $CopyToBuildDir $BuildDirectory; done; fi
+    if [[ $RemoveFromBuildDir != '' ]]; then for file in $RemoveFromBuildDir; do rm -v -r $file $BuildDirectory; done; fi
+    if [[ $CopyToBuildDir != '' ]]; then for file in $CopyToBuildDir; do cp -v -r $file $BuildDirectory; done; fi
     if [ -f $BuildPath.version ]; then sed -e 's/.*//g' -i $BuildPath.version; fi
     echo "$BuildFilename: built from $OSTYPE with G++ on $(date +%F), at $(date +%T) (GMT$(date +%Z))" >> $BuildPath.version
     echo "$(cat $BuildPath.version)"
