@@ -26,10 +26,10 @@ A simple cross-platform build environment, with a program that outputs its own b
 - --asm-output
 
 ## Settings
-The file **build.config** is used to define custom build and post-build configurations and tasks. The options are given in this format:
-> OptionName="some stuff"
+The file **build.config** is used to define custom build and post-build configurations and tasks. Options are given in this format:
+> OptionName={arg1 arg2}
 
-The build script will read everything inside quotes, if it is a valid option.
+The build script will read everything inside curly braces, if the option preceding the equal sign is valid.
 Currently accepted options are:
 
 **CommonSourceFiles**  
