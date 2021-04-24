@@ -11,23 +11,23 @@ Source=$(pwd)
 echo "Working directory: $Source"
 
 # Get common build settings from build.config #
-SourceFiles=$(echo $(cat build.config) | grep -oP 'CommonSourceFiles=\"\K.*?(?=\")')
-CommonArguments=$(echo $(cat build.config) | grep -oP 'CommonArguments=\"\K.*?(?=\")')
-CommonLibraries=$(echo $(cat build.config) | grep -oP 'CommonLibraries=\"\K.*?(?=\")')
-RemoveFromBuildDir=$(echo $(cat build.config) | grep -oP 'RemoveFromBuildDir=\"\K.*?(?=\")')
-CopyToBuildDir=$(echo $(cat build.config) | grep -oP 'CopyToBuildDir=\"\K.*?(?=\")')
+SourceFiles=$(echo $(cat build.config) | grep -oP 'CommonSourceFiles={\K.*?(?=})')
+CommonArguments=$(echo $(cat build.config) | grep -oP 'CommonArguments={\K.*?(?=})')
+CommonLibraries=$(echo $(cat build.config) | grep -oP 'CommonLibraries={\K.*?(?=})')
+RemoveFromBuildDir=$(echo $(cat build.config) | grep -oP 'RemoveFromBuildDir={\K.*?(?=})')
+CopyToBuildDir=$(echo $(cat build.config) | grep -oP 'CopyToBuildDir={\K.*?(?=})')
 
 # Get system specific build settings from build.config #
 if [[ $1 == "--linux" || $1 == "-L" ]]; then
-    SourceFilesSys=$(echo $(cat build.config) | grep -oP 'SourceFilesLinux=\"\K.*?(?=\")')
-    ArgumentsSys=$(echo $(cat build.config) | grep -oP 'ArgumentsLinux=\"\K.*?(?=\")')
-    LibrariesSys=$(echo $(cat build.config) | grep -oP 'LibrariesLinux=\"\K.*?(?=\")')
-    BuildPath=$(echo $(cat build.config) | grep -oP 'BuildPathLinux=\"\K.*?(?=\")')
+    SourceFilesSys=$(echo $(cat build.config) | grep -oP 'SourceFilesLinux={\K.*?(?=})')
+    ArgumentsSys=$(echo $(cat build.config) | grep -oP 'ArgumentsLinux={\K.*?(?=})')
+    LibrariesSys=$(echo $(cat build.config) | grep -oP 'LibrariesLinux={\K.*?(?=})')
+    BuildPath=$(echo $(cat build.config) | grep -oP 'BuildPathLinux={\K.*?(?=})')
 elif [[ $1 == "--windows" || $1 == "-W" ]]; then
-    SourceFilesSys=$(echo $(cat build.config) | grep -oP 'SourceFilesWindows=\"\K.*?(?=\")')
-    ArgumentsSys=$(echo $(cat build.config) | grep -oP 'ArgumentsWindows=\"\K.*?(?=\")')
-    LibrariesSys=$(echo $(cat build.config) | grep -oP 'LibrariesWindows=\"\K.*?(?=\")')
-    BuildPath=$(echo $(cat build.config) | grep -oP 'BuildPathWindows=\"\K.*?(?=\")')
+    SourceFilesSys=$(echo $(cat build.config) | grep -oP 'SourceFilesWindows={\K.*?(?=})')
+    ArgumentsSys=$(echo $(cat build.config) | grep -oP 'ArgumentsWindows={\K.*?(?=})')
+    LibrariesSys=$(echo $(cat build.config) | grep -oP 'LibrariesWindows={\K.*?(?=})')
+    BuildPath=$(echo $(cat build.config) | grep -oP 'BuildPathWindows={\K.*?(?=})')
 fi
 
 BuildDirectory=${BuildPath%/*}
@@ -40,7 +40,9 @@ if [ ! -d $BuildDirectory ]; then
     mkdir -p --verbose $BuildDirectory
 fi
 
+#============#
 # Clean task #
+#============#
 if [[ $@ == *" --clean"* || $@ == *" -c"* ]]; then
     # Prevent accidentally cleaning source directory #
     if   [[ $BuildDirectory == '' ]]; then
